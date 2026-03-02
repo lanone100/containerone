@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>貨櫃裝載計算表</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #00d9a3;
+    --accent2: #0096ff;
+    --warn: #f85149;
+    --warn-bg: rgba(248,81,73,0.12);
+    --ok: #3fb950;
+    --ok-bg: rgba(63,185,80,0.12);
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Noto Sans TC', sans-serif;
+    --r: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0d2137 0%, #0d1117 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 16px 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .header p {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  /* Main content */
+  .main { padding: 14px 12px; max-width: 600px; margin: 0 auto; }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .card-head .icon { font-size: 15px; }
+  .card-head .chevron {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text3);
+    transition: transform 0.2s;
+  }
+  .card-head.open .chevron { transform: rotate(180deg); }
+  .card-body { padding: 14px; }
+  .card-body.collapsed { display: none; }
+
+  /* Container type tabs */
+  .type-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .type-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--mono);
+  }
+  .type-tab.active {
+    background: rgba(0,217,163,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .type-tab .sub {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text3);
+    margin-top: 2px;
+    font-family: var(--sans);
+  }
+  .type-tab.active .sub { color: rgba(0,217,163,0.7); }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 5px;
+    letter-spacing: 0.03em;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 10px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+  }
+  .field.full { grid-column: span 2; }
+  .field.full3 { grid-column: span 3; }
+
+  /* dim-row: 3 inputs in one line */
+  .dim-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    align-items: end;
+  }
+  .dim-sep {
+    text-align: center;
+    color: var(--text3);
+    font-size: 16px;
+    padding-bottom: 10px;
+    line-height: 1;
+  }
+
+  /* Toggle row */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 4px;
+  }
+  .toggle-row label {
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+  }
+  .toggle input { display: none; }
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle.on .toggle-track { background: var(--accent); }
+  .toggle-knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.2s;
+    pointer-events: none;
+  }
+  .toggle.on .toggle-knob { left: 23px; }
+
+  /* Calculate button */
+  .calc-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: 9px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--sans);
+    cursor: pointer;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+    transition: opacity 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .calc-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* Result hidden before calc */
+  .result-section { display: none; }
+  .result-section.visible { display: block; }
+
+  /* Best result card */
+  .best-card {
+    background: linear-gradient(135deg, rgba(0,217,163,0.08) 0%, rgba(0,150,255,0.05) 100%);
+    border: 1px solid rgba(0,217,163,0.3);
+    border-radius: var(--r);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .best-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .best-count {
+    font-size: 52px;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .best-count span {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text2);
+    margin-left: 4px;
+  }
+  .best-stats-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .best-stat { flex: 1; }
+  .best-stat .sl { font-size: 10px; color: var(--text3); margin-bottom: 2px; }
+  .best-stat .sv {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  .best-stat .sv.warn { color: var(--warn); }
+  .best-stat .sv.ok { color: var(--ok); }
+
+  /* Progress bar */
+  .progress-wrap { margin-top: 12px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  /* Comparison table (scrollable) */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--text3);
+    font-weight: 600;
+    padding: 9px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+  td {
+    padding: 9px 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-family: var(--mono);
+    color: var(--text);
+    white-space: nowrap;
+  }
+  tr.best-row-tr td { background: rgba(0,217,163,0.06); }
+  tr.best-row-tr td:first-child { position: relative; }
+  .best-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #0d1117;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 10px;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-family: var(--sans);
+  }
+  .warn-text { color: var(--warn); }
+  .ok-text { color: var(--ok); }
+
+  /* Views tabs */
+  .view-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .vtab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .vtab.active {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: rgba(0,150,255,0.08);
+  }
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
+  .canvas-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #0d1117;
+    border-radius: 8px;
+    padding: 8px 8px 4px;
+    border: 1px solid var(--border);
+  }
+  canvas { display: block; }
+  .view-title {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* Print */
+  @media print {
+    .header, .input-section, .calc-btn, .view-tabs, .canvas-wrap { display: none !important; }
+    body { background: white; color: #000; padding: 0; }
+    .best-card { border: 1px solid #ccc; background: #f9f9f9; }
+  }
+
+  /* Responsive: single column on very narrow */
+  @media (max-width: 340px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid.cols3 { grid-template-columns: 1fr 1fr; }
+    .type-tabs { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📦 貨櫃裝載計算表</h1>
+  <p>Container Loading Calculator</p>
+</div>
+
+<div class="main">
+
+  <!-- 貨櫃設置 -->
+  <div class="card input-section">
+    <div class="card-head open" onclick="toggleCard(this)">
+      <span class="icon">🚢</span> 貨櫃規格
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="type-tabs">
+        <div class="type-tab active" data-type="40HQ" onclick="selectType(this)">
+          40HQ
+          <div class="sub">最常用</div>
+        </div>
+        <div class="type-tab" data-type="20GP" onclick="selectType(this)">
+          20GP
+          <div class="sub">標準</div>
+        </div>
+        <div class="type-tab" data-type="40GP" onclick="selectType(this)">
+          40GP
+          <div class="sub">標準</div>
+        </div>
+        <div class="type-tab" data-type="45HQ" onclick="selectType(this)">
+          45HQ
+          <div class="sub">加長</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>長度 (cm)</label>
+          <input type="number" id="c-len" value="1201" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>寬度 (cm)</label>
+          <input type="number" id="c-wid" value="234" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>高度 (cm)</label>
+          <input type="number" id="c-hgt" value="269" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>最大載重 (kg)</label>
+          <input type="number" id="c-wgt" value="26000" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 箱子資料 -->
+  <div class="card input-section">
+    <div class="card-head open" onclick="toggleCard(this)">
+      <span class="icon">📫</span> 箱子規格
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="form-grid cols3">
+        <div class="field">
+          <label>長 (cm)</label>
+          <input type="number" id="b-len" value="60" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>寬 (cm)</label>
+          <input type="number" id="b-wid" value="40" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>高 (cm)</label>
+          <input type="number" id="b-hgt" value="30" inputmode="decimal">
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:10px">
+        <div class="field">
+          <label>每箱重量 (kg)</label>
+          <input type="number" id="b-wgt" value="15" inputmode="decimal">
+        </div>
+        <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;">
+          <div class="toggle-row" style="padding-top:0">
+            <label>允許翻轉</label>
+            <div class="toggle on" id="rot-toggle" onclick="toggleRot(this)">
+              <input type="checkbox" id="allow-rot" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">
+        <span>⚡</span> 計算裝載方案
+      </button>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div class="result-section" id="result-section">
+
+    <!-- 最佳摘要 -->
+    <div class="best-card">
+      <div class="best-label">✦ 最佳裝載方案</div>
+      <div class="best-count" id="r-count">0<span>箱</span></div>
+      <div id="r-orient" style="font-size:12px;color:var(--text3);margin-top:4px;font-family:var(--mono)"></div>
+      <div class="best-stats-row">
+        <div class="best-stat">
+          <div class="sl">擺放軸向</div>
+          <div class="sv" id="r-axis">—</div>
+        </div>
+        <div class="best-stat">
+          <div class="sl">總重量</div>
+          <div class="sv" id="r-weight">—</div>
+        </div>
+        <div class="best-stat">
+          <div class="sl">過重警告</div>
+          <div class="sv" id="r-overw">—</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>空間利用率</span>
+          <span id="r-util">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="r-prog" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 方案比較 -->
+    <div class="card">
+      <div class="card-head open" onclick="toggleCard(this)">
+        <span class="icon">📊</span> 方案比較
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>方向</th>
+                <th>尺寸</th>
+                <th>長×寬×高</th>
+                <th>總箱</th>
+                <th>重量(kg)</th>
+                <th>利用率</th>
+                <th>狀態</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 視圖 -->
+    <div class="card">
+      <div class="card-head open" onclick="toggleCard(this)">
+        <span class="icon">🗺</span> 裝載示意圖
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="view-tabs">
+          <div class="vtab active" data-view="top" onclick="switchView(this)">頂視圖</div>
+          <div class="vtab" data-view="front" onclick="switchView(this)">前視圖</div>
+          <div class="vtab" data-view="side" onclick="switchView(this)">側視圖</div>
+          <div class="vtab" data-view="info" onclick="switchView(this)">說明</div>
+        </div>
+        <div class="view-panel active" id="v-top">
+          <div class="view-title">頂視圖（俯視）— 長 × 寬</div>
+          <div class="canvas-wrap"><canvas id="top-canvas"></canvas></div>
+        </div>
+        <div class="view-panel" id="v-front">
+          <div class="view-title">前視圖 — 寬 × 高</div>
+          <div class="canvas-wrap"><canvas id="front-canvas"></canvas></div>
+        </div>
+        <div class="view-panel" id="v-side">
+          <div class="view-title">側視圖 — 長 × 高</div>
+          <div class="canvas-wrap"><canvas id="side-canvas"></canvas></div>
+        </div>
+        <div class="view-panel" id="v-info">
+          <div id="info-detail" style="font-size:13px;color:var(--text2);line-height:1.8;font-family:var(--mono)"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /result-section -->
+
+</div><!-- /main -->
+
+<script>
+const PRESETS = {
+  '20GP': { len:590,  wid:234, hgt:238, wgt:21770 },
+  '40GP': { len:1201, wid:234, hgt:238, wgt:26760 },
+  '40HQ': { len:1201, wid:234, hgt:269, wgt:26000 },
+  '45HQ': { len:1356, wid:234, hgt:269, wgt:29000 }
+};
+
+function toggleCard(head) {
+  const body = head.nextElementSibling;
+  const isOpen = head.classList.contains('open');
+  head.classList.toggle('open');
+  if (isOpen) {
+    body.classList.add('collapsed');
+  } else {
+    body.classList.remove('collapsed');
+  }
+}
+
+function selectType(el) {
+  document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const p = PRESETS[el.dataset.type];
+  document.getElementById('c-len').value = p.len;
+  document.getElementById('c-wid').value = p.wid;
+  document.getElementById('c-hgt').value = p.hgt;
+  document.getElementById('c-wgt').value = p.wgt;
+}
+
+function switchView(el) {
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('v-' + el.dataset.view).classList.add('active');
+}
+
+function toggleRot(el) {
+  el.classList.toggle('on');
+  const cb = document.getElementById('allow-rot');
+  cb.checked = el.classList.contains('on');
+}
+
+function calculate(doScroll = true) {
+  const cLen = +document.getElementById('c-len').value;
+  const cWid = +document.getElementById('c-wid').value;
+  const cHgt = +document.getElementById('c-hgt').value;
+  const cWgt = +document.getElementById('c-wgt').value;
+  const bLen = +document.getElementById('b-len').value;
+  const bWid = +document.getElementById('b-wid').value;
+  const bHgt = +document.getElementById('b-hgt').value;
+  const bWgt = +document.getElementById('b-wgt').value;
+  const rot  = document.getElementById('allow-rot').checked;
+
+  if (!cLen||!cWid||!cHgt||!bLen||!bWid||!bHgt||!bWgt) return;
+
+  const orients = rot ? [
+    { dims:[bLen,bWid,bHgt], name:'長×寬×高' },
+    { dims:[bLen,bHgt,bWid], name:'長×高×寬' },
+    { dims:[bWid,bLen,bHgt], name:'寬×長×高' },
+    { dims:[bWid,bHgt,bLen], name:'寬×高×長' },
+    { dims:[bHgt,bLen,bWid], name:'高×長×寬' },
+    { dims:[bHgt,bWid,bLen], name:'高×寬×長' }
+  ] : [{ dims:[bLen,bWid,bHgt], name:'長×寬×高' }];
+
+  const results = orients.map(o => {
+    const [l,w,h] = o.dims;
+    const lc = Math.floor(cLen/l);
+    const wc = Math.floor(cWid/w);
+    const hc = Math.floor(cHgt/h);
+    const total = lc*wc*hc;
+    const tw = total*bWgt;
+    const ow = tw > cWgt;
+    const adj = ow ? Math.floor(cWgt/bWgt) : total;
+    const util = (total*(l*w*h)/(cLen*cWid*cHgt)*100).toFixed(1);
+    return { name:o.name, dims:`${l}×${w}×${h}`, axis:`${lc}×${wc}×${hc}`,
+             total, tw:tw.toFixed(0), ow, adj, util,
+             boxDims:[l,w,h], counts:[lc,wc,hc] };
+  });
+
+  results.sort((a,b) => b.adj - a.adj);
+  const best = results[0];
+
+  // Best card
+  document.getElementById('r-count').innerHTML = `${best.adj}<span>箱</span>`;
+  document.getElementById('r-orient').textContent = `擺放方式：${best.name}  ／  箱子尺寸：${best.dims} cm`;
+  document.getElementById('r-axis').textContent = best.axis;
+  document.getElementById('r-weight').textContent = `${best.tw} kg`;
+  const ow = best.ow;
+  const owEl = document.getElementById('r-overw');
+  owEl.textContent = ow ? '⚠ 超重' : '✔ 正常';
+  owEl.className = 'sv ' + (ow ? 'warn' : 'ok');
+  document.getElementById('r-util').textContent = best.util + '%';
+  document.getElementById('r-prog').style.width = Math.min(parseFloat(best.util), 100) + '%';
+
+  // Table
+  const tb = document.getElementById('results-body');
+  tb.innerHTML = '';
+  results.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    if (i===0) tr.className = 'best-row-tr';
+    tr.innerHTML = `
+      <td>${r.name}${i===0?'<span class="best-badge">最佳</span>':''}</td>
+      <td>${r.dims}</td>
+      <td>${r.axis}</td>
+      <td>${r.adj}${r.ow?'<span class="warn-text">*</span>':''}</td>
+      <td class="${r.ow?'warn-text':''}">${r.tw}</td>
+      <td>${r.util}%</td>
+      <td class="${r.ow?'warn-text':'ok-text'}">${r.ow?'超重':'正常'}</td>
+    `;
+    tb.appendChild(tr);
+  });
+
+  // Info
+  document.getElementById('info-detail').innerHTML = `
+貨櫃類型：${document.querySelectorAll('.type-tab.active')[0]?.dataset.type||'自訂'}<br>
+貨櫃內尺寸：${cLen} × ${cWid} × ${cHgt} cm<br>
+最大載重：${cWgt} kg<br>
+─────────────────<br>
+箱子尺寸：${bLen} × ${bWid} × ${bHgt} cm<br>
+每箱重量：${bWgt} kg<br>
+允許翻轉：${rot?'是':'否'}<br>
+─────────────────<br>
+最佳方案裝載：${best.adj} 箱<br>
+擺放方式：${best.name}<br>
+軸向排列：${best.axis}（長×寬×高）<br>
+總重量：${best.tw} kg${best.ow?' ⚠ 超重':''}<br>
+空間利用率：${best.util}%
+  `.trim();
+
+  // Draw
+  drawAll(best, cLen, cWid, cHgt);
+
+  // Show result
+  const rs = document.getElementById('result-section');
+  rs.classList.add('visible');
+  if (doScroll) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        rs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    });
+  }
+}
+
+function drawAll(result, cLen, cWid, cHgt) {
+  const [bLen, bWid, bHgt] = result.boxDims;
+  const [lc, wc, hc] = result.counts;
+
+  // Bright, distinct fill colors (light enough to show labels on top)
+  const FILLS = [
+    '#4fc3f7','#81c784','#ffb74d','#f48fb1','#ce93d8',
+    '#80cbc4','#fff176','#ffcc80','#a5d6a7','#90caf9'
+  ];
+  const STROKES = [
+    '#0288d1','#388e3c','#e65100','#c2185b','#7b1fa2',
+    '#00695c','#f9a825','#ef6c00','#2e7d32','#1565c0'
+  ];
+
+  const PAD  = 44; // left/bottom padding for axis labels
+  const PADR = 10; // right padding
+  const PADT = 28; // top padding for title
+
+  function setupCanvas(id, cW, cH) {
+    const canvas = document.getElementById(id);
+    const maxW = Math.min(window.innerWidth - 48, 600);
+    const maxH = 320;
+    const scale = Math.min((maxW - PAD - PADR) / cW, (maxH - PADT - PAD) / cH);
+    canvas.width  = Math.ceil(cW * scale) + PAD + PADR;
+    canvas.height = Math.ceil(cH * scale) + PADT + PAD;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return { ctx, scale, ox: PAD, oy: PADT, cW, cH };
+  }
+
+  function drawBoxGrid(ctx, ox, oy, scale, cols, rows, bW, bH, colorIdx) {
+    for (let c = 0; c < cols; c++) {
+      for (let r = 0; r < rows; r++) {
+        const idx = (c * 3 + r * 7) % FILLS.length;
+        const x = ox + c * bW * scale;
+        const y = oy + r * bH * scale;
+        const w = bW * scale;
+        const h = bH * scale;
+
+        // Fill
+        ctx.fillStyle = FILLS[idx];
+        ctx.fillRect(x, y, w, h);
+
+        // Subtle gradient overlay for depth
+        const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+        grad.addColorStop(0, 'rgba(255,255,255,0.18)');
+        grad.addColorStop(1, 'rgba(0,0,0,0.10)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, w, h);
+
+        // Border
+        ctx.strokeStyle = STROKES[idx];
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+
+        // Box number label if box is big enough
+        if (w > 18 && h > 14) {
+          const num = c * rows + r + 1;
+          ctx.fillStyle = 'rgba(0,0,0,0.55)';
+          ctx.font = `bold ${Math.min(11, Math.floor(Math.min(w,h)*0.38))}px monospace`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(num, x + w / 2, y + h / 2);
+        }
+      }
+    }
+  }
+
+  function drawContainerFrame(ctx, ox, oy, cW, cH, scale) {
+    // Shadow
+    ctx.shadowColor = 'rgba(0,217,163,0.25)';
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = '#00d9a3';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(ox, oy, cW * scale, cH * scale);
+    ctx.shadowBlur = 0;
+
+    // Corner marks
+    const m = 8;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    [[ox,oy],[ox+cW*scale,oy],[ox,oy+cH*scale],[ox+cW*scale,oy+cH*scale]].forEach(([cx,cy],i) => {
+      const dx = i%2===0?1:-1, dy = i<2?1:-1;
+      ctx.beginPath(); ctx.moveTo(cx,cy+dy*m); ctx.lineTo(cx,cy); ctx.lineTo(cx+dx*m,cy); ctx.stroke();
+    });
+  }
+
+  function drawAxisLabels(ctx, ox, oy, cW, cH, scale, xLabel, yLabel, xUnit, yUnit) {
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+
+    // X-axis: dimension label centred below
+    ctx.fillText(`← ${xLabel}: ${xUnit} cm →`, ox + cW * scale / 2, oy + cH * scale + 20);
+
+    // Y-axis: rotated label on left
+    ctx.save();
+    ctx.translate(14, oy + cH * scale / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`← ${yLabel}: ${yUnit} cm →`, 0, 0);
+    ctx.restore();
+  }
+
+  function drawTitle(ctx, canvasW, text) {
+    ctx.fillStyle = '#e6edf3';
+    ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(text, canvasW / 2, 8);
+  }
+
+  function drawResidual(ctx, ox, oy, scale, cW, cH, usedW, usedH) {
+    const rx = ox + usedW * scale;
+    const ry = oy + usedH * scale;
+    const remW = (cW - usedW) * scale;
+    const remH = (cH - usedH) * scale;
+    if (remW > 2) {
+      ctx.fillStyle = 'rgba(248,81,73,0.12)';
+      ctx.fillRect(rx, oy, remW, cH * scale);
+      ctx.strokeStyle = 'rgba(248,81,73,0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(rx, oy, remW, cH * scale);
+      ctx.setLineDash([]);
+      if (remW > 22) {
+        ctx.fillStyle = '#f85149';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`+${cW - usedW}`, rx + remW / 2, oy + cH * scale / 2);
+      }
+    }
+    if (remH > 2) {
+      ctx.fillStyle = 'rgba(248,81,73,0.10)';
+      ctx.fillRect(ox, ry, usedW * scale, remH);
+      ctx.strokeStyle = 'rgba(248,81,73,0.35)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(ox, ry, usedW * scale, remH);
+      ctx.setLineDash([]);
+      if (remH > 16) {
+        ctx.fillStyle = '#f85149';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`+${cH - usedH}`, ox + usedW * scale / 2, ry + remH / 2);
+      }
+    }
+  }
+
+  // ── TOP VIEW (長 × 寬) ──
+  {
+    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('top-canvas', cLen, cWid);
+    drawTitle(ctx, ctx.canvas.width, `頂視圖（俯視）  ${lc} × ${wc} = ${lc*wc} 箱/層`);
+    drawBoxGrid(ctx, ox, oy, scale, lc, wc, bLen, bWid, 0);
+    drawResidual(ctx, ox, oy, scale, cLen, cWid, lc * bLen, wc * bWid);
+    drawContainerFrame(ctx, ox, oy, cLen, cWid, scale);
+    drawAxisLabels(ctx, ox, oy, cLen, cWid, scale, '長', '寬', cLen, cWid);
+  }
+
+  // ── FRONT VIEW (寬 × 高) ──
+  {
+    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('front-canvas', cWid, cHgt);
+    drawTitle(ctx, ctx.canvas.width, `前視圖  ${wc} × ${hc} 層 = ${wc*hc} 格`);
+    drawBoxGrid(ctx, ox, oy, scale, wc, hc, bWid, bHgt, 1);
+    drawResidual(ctx, ox, oy, scale, cWid, cHgt, wc * bWid, hc * bHgt);
+    drawContainerFrame(ctx, ox, oy, cWid, cHgt, scale);
+    drawAxisLabels(ctx, ox, oy, cWid, cHgt, scale, '寬', '高', cWid, cHgt);
+  }
+
+  // ── SIDE VIEW (長 × 高) ──
+  {
+    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('side-canvas', cLen, cHgt);
+    drawTitle(ctx, ctx.canvas.width, `側視圖  ${lc} × ${hc} 層`);
+    drawBoxGrid(ctx, ox, oy, scale, lc, hc, bLen, bHgt, 2);
+    drawResidual(ctx, ox, oy, scale, cLen, cHgt, lc * bLen, hc * bHgt);
+    drawContainerFrame(ctx, ox, oy, cLen, cHgt, scale);
+    drawAxisLabels(ctx, ox, oy, cLen, cHgt, scale, '長', '高', cLen, cHgt);
+  }
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  calculate(false);
+});
+</script>
+</body>
+</html>
