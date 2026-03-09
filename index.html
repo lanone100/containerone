@@ -4,470 +4,755 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>貨櫃裝載計算表</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --surface2: #f5f7fa;
-    --border: #d0d7de;
-    --accent: #0a9d76;
-    --accent2: #0068d6;
-    --warn: #cf1322;
-    --warn-bg: rgba(207,19,34,0.08);
-    --ok: #1a7f37;
-    --ok-bg: rgba(26,127,55,0.08);
-    --text: #1a1f29;
-    --text2: #4a5568;
-    --text3: #718096;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Noto Sans TC', sans-serif;
-    --r: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
+/* ═══════════════════════════════════════════
+   Apple-style Design System
+═══════════════════════════════════════════ */
+:root {
+  /* Apple SF-style palette */
+  --bg:           #f2f2f7;
+  --bg2:          #e5e5ea;
+  --surface:      #ffffff;
+  --surface-glass:rgba(255,255,255,0.82);
+  --border:       rgba(60,60,67,0.13);
+  --separator:    rgba(60,60,67,0.09);
 
-  /* Header */
-  .header {
-    background: linear-gradient(135deg, #e8f4ff 0%, #f0f9f5 60%);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 16px 16px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header h1 {
-    font-size: 17px;
-    font-weight: 700;
-    color: #0a7a5c;
-    letter-spacing: 0.05em;
-  }
-  .header p {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 3px;
-    font-family: var(--mono);
-  }
+  /* Brand colors — rich gradient trio */
+  --blue:         #007AFF;
+  --teal:         #30D158;
+  --indigo:       #5E5CE6;
+  --orange:       #FF9F0A;
+  --red:          #FF3B30;
+  --pink:         #FF375F;
+  --cyan:         #32ADE6;
 
-  /* Main content */
-  .main { padding: 14px 12px; max-width: 600px; margin: 0 auto; }
+  /* Accent (primary action) */
+  --accent:       #007AFF;
+  --accent-light: rgba(0,122,255,0.10);
+  --accent2:      #30D158;
+  --accent2-light:rgba(48,209,88,0.10);
 
-  /* Card */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    margin-bottom: 14px;
-    overflow: hidden;
-  }
-  .card-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 14px 10px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text2);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .card-head .icon { font-size: 15px; }
-  .card-head .chevron {
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--text3);
-    transition: transform 0.2s;
-  }
-  .card-head.open .chevron { transform: rotate(180deg); }
-  .card-body { padding: 14px; }
-  .card-body.collapsed { display: none; }
+  /* Status */
+  --ok:           #30D158;
+  --ok-bg:        rgba(48,209,88,0.10);
+  --warn:         #FF3B30;
+  --warn-bg:      rgba(255,59,48,0.10);
 
-  /* Container type tabs */
-  .type-tabs {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .type-tab {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 9px 4px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: var(--mono);
-  }
-  .type-tab.active {
-    background: rgba(10,157,118,0.10);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .type-tab .sub {
-    font-size: 10px;
-    font-weight: 400;
-    color: var(--text3);
-    margin-top: 2px;
-    font-family: var(--sans);
-  }
-  .type-tab.active .sub { color: rgba(10,157,118,0.75); }
+  /* Text hierarchy */
+  --t1:           #1c1c1e;
+  --t2:           #3a3a3c;
+  --t3:           #636366;
+  --t4:           #aeaeb2;
 
-  /* Form grid */
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
-  .field label {
-    display: block;
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 5px;
-    letter-spacing: 0.03em;
-  }
-  .field input, .field select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 10px 10px;
-    font-size: 14px;
-    color: var(--text);
-    font-family: var(--mono);
-    outline: none;
-    transition: border-color 0.15s;
-    -webkit-appearance: none;
-  }
-  .field input:focus, .field select:focus {
-    border-color: var(--accent);
-  }
-  .field.full { grid-column: span 2; }
-  .field.full3 { grid-column: span 3; }
+  /* Typography */
+  --sans:  'Noto Sans TC', -apple-system, 'SF Pro Text', sans-serif;
+  --mono:  'JetBrains Mono', 'SF Mono', monospace;
 
-  /* dim-row: 3 inputs in one line */
-  .dim-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    align-items: end;
-  }
-  .dim-sep {
-    text-align: center;
-    color: var(--text3);
-    font-size: 16px;
-    padding-bottom: 10px;
-    line-height: 1;
-  }
+  /* Shape */
+  --r-sm:   10px;
+  --r-md:   14px;
+  --r-lg:   20px;
+  --r-xl:   28px;
 
-  /* Toggle row */
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0 4px;
-  }
-  .toggle-row label {
-    font-size: 13px;
-    color: var(--text2);
-  }
-  .toggle {
-    position: relative;
-    width: 44px;
-    height: 24px;
-  }
-  .toggle input { display: none; }
-  .toggle-track {
-    position: absolute;
-    inset: 0;
-    background: var(--border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .toggle.on .toggle-track { background: var(--accent); }
-  .toggle-knob {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 18px; height: 18px;
-    background: white;
-    border-radius: 50%;
-    transition: left 0.2s;
-    pointer-events: none;
-  }
-  .toggle.on .toggle-knob { left: 23px; }
+  /* Shadow */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+}
 
-  /* Calculate button */
-  .calc-btn {
-    width: 100%;
-    background: var(--accent);
-    color: #ffffff;
-    border: none;
-    border-radius: 9px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: var(--sans);
-    cursor: pointer;
-    margin-top: 6px;
-    letter-spacing: 0.05em;
-    transition: opacity 0.15s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .calc-btn:active { opacity: 0.85; transform: scale(0.98); }
+/* ═══════════════════════════════════════════
+   Base Reset
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* Result hidden before calc */
-  .result-section { display: none; }
-  .result-section.visible { display: block; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  padding-bottom: 48px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  /* Best result card */
-  .best-card {
-    background: linear-gradient(135deg, rgba(10,157,118,0.07) 0%, rgba(0,104,214,0.04) 100%);
-    border: 1px solid rgba(10,157,118,0.3);
-    border-radius: var(--r);
-    padding: 16px;
-    margin-bottom: 14px;
-  }
-  .best-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .best-count {
-    font-size: 52px;
-    font-weight: 700;
-    font-family: var(--mono);
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .best-count span {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--text2);
-    margin-left: 4px;
-  }
-  .best-stats-row {
-    display: flex;
-    gap: 16px;
-    margin-top: 12px;
-  }
-  .best-stat { flex: 1; }
-  .best-stat .sl { font-size: 10px; color: var(--text3); margin-bottom: 2px; }
-  .best-stat .sv {
-    font-size: 13px;
-    font-weight: 600;
-    font-family: var(--mono);
-    color: var(--text);
-  }
-  .best-stat .sv.warn { color: var(--warn); }
-  .best-stat .sv.ok { color: var(--ok); }
+/* ═══════════════════════════════════════════
+   Header — frosted glass, sticky
+═══════════════════════════════════════════ */
+.header {
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--border);
+  padding: 18px 20px 14px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
 
-  /* Progress bar */
-  .progress-wrap { margin-top: 12px; }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 5px;
-  }
-  .progress-track {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    border-radius: 3px;
-    transition: width 0.6s ease;
-  }
+.header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
 
-  /* Comparison table (scrollable) */
-  .table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -14px;
-    padding: 0 14px;
-  }
-  table {
-    width: 100%;
-    min-width: 520px;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  th {
-    background: var(--surface2);
-    color: var(--text3);
-    font-weight: 600;
-    padding: 9px 8px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    font-size: 11px;
-    letter-spacing: 0.03em;
-  }
-  td {
-    padding: 9px 8px;
-    text-align: center;
-    border-bottom: 1px solid rgba(208,215,222,0.7);
-    font-family: var(--mono);
-    color: var(--text);
-    white-space: nowrap;
-  }
-  tr.best-row-tr td { background: rgba(10,157,118,0.06); }
-  tr.best-row-tr td:first-child { position: relative; }
-  .best-badge {
-    display: inline-block;
-    background: var(--accent);
-    color: #ffffff;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 5px;
-    border-radius: 10px;
-    margin-left: 4px;
-    vertical-align: middle;
-    font-family: var(--sans);
-  }
-  .warn-text { color: var(--warn); }
-  .ok-text { color: var(--ok); }
+.header-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(145deg, #007AFF, #5E5CE6);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0,122,255,0.30);
+  flex-shrink: 0;
+}
 
-  /* Views tabs */
-  .view-tabs {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-  .vtab {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 8px 4px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--text3);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .vtab.active {
-    border-color: var(--accent2);
-    color: var(--accent2);
-    background: rgba(0,104,214,0.07);
-  }
-  .view-panel { display: none; }
-  .view-panel.active { display: block; }
-  .canvas-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    background: #f8fafb;
-    border-radius: 8px;
-    padding: 8px 8px 4px;
-    border: 1px solid var(--border);
-  }
-  canvas { display: block; }
-  .view-title {
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 8px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
+.header-text { text-align: left; }
 
-  /* Print */
-  @media print {
-    .header, .input-section, .calc-btn, .view-tabs, .canvas-wrap { display: none !important; }
-    body { background: white; color: #000; padding: 0; }
-    .best-card { border: 1px solid #ccc; background: #f9f9f9; }
-  }
+.header h1 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -0.3px;
+}
 
-  /* Responsive: single column on very narrow */
-  @media (max-width: 340px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .form-grid.cols3 { grid-template-columns: 1fr 1fr; }
-    .type-tabs { grid-template-columns: repeat(2,1fr); }
-  }
+.header p {
+  font-size: 12px;
+  color: var(--t3);
+  margin-top: 1px;
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
 
-  /* Mobile font & touch enhancements */
-  @media (max-width: 480px) {
-    .field input, .field select {
-      font-size: 16px; /* prevent iOS zoom on focus */
-      padding: 11px 10px;
-    }
-    .field label { font-size: 12px; }
-    .best-count { font-size: 44px; }
-    .type-tab { font-size: 13px; padding: 10px 4px; }
-    .card-head { font-size: 13px; }
-    .calc-btn { font-size: 16px; padding: 15px; }
-    table { font-size: 12px; }
-    th { font-size: 11px; padding: 8px 6px; }
-    td { padding: 8px 6px; }
-  }
+/* ═══════════════════════════════════════════
+   Main layout
+═══════════════════════════════════════════ */
+.main {
+  padding: 16px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
 
-  /* Tablet+ comfortable padding */
-  @media (min-width: 600px) {
-    .main { padding: 20px 16px; }
-    .card-body { padding: 18px; }
-    .best-count { font-size: 60px; }
-    .field input, .field select { font-size: 15px; }
-  }
+/* ═══════════════════════════════════════════
+   Section label (iOS grouped style)
+═══════════════════════════════════════════ */
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 4px;
+  margin: 20px 0 8px;
+}
+.section-label:first-child { margin-top: 8px; }
+
+/* ═══════════════════════════════════════════
+   Card — iOS grouped list style
+═══════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 0.5px solid var(--border);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px 12px;
+  border-bottom: 0.5px solid var(--separator);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-head-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.card-head-icon.blue   { background: linear-gradient(145deg, #007AFF, #5AC8FA); }
+.card-head-icon.teal   { background: linear-gradient(145deg, #30D158, #34C759); }
+.card-head-icon.indigo { background: linear-gradient(145deg, #5E5CE6, #AF52DE); }
+.card-head-icon.orange { background: linear-gradient(145deg, #FF9F0A, #FF6B00); }
+
+.card-head-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--t1);
+  letter-spacing: -0.2px;
+  flex: 1;
+}
+
+.chevron {
+  font-size: 12px;
+  color: var(--t4);
+  transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+  margin-left: auto;
+}
+.card-head.open .chevron { transform: rotate(180deg); }
+
+.card-body { padding: 16px 18px 18px; }
+.card-body.collapsed { display: none; }
+
+/* ═══════════════════════════════════════════
+   Container type selector — pill tabs
+═══════════════════════════════════════════ */
+.type-tabs {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 7px;
+  margin-bottom: 18px;
+  background: var(--bg);
+  border-radius: var(--r-md);
+  padding: 5px;
+}
+
+.type-tab {
+  border-radius: 10px;
+  padding: 9px 4px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25,0.46,0.45,0.94);
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+  border: none;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.type-tab.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.type-tab .sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--t4);
+  margin-top: 2px;
+  font-family: var(--sans);
+  letter-spacing: 0;
+  display: block;
+}
+
+.type-tab.active .sub { color: rgba(0,122,255,0.65); }
+
+/* ═══════════════════════════════════════════
+   Form fields — iOS style
+═══════════════════════════════════════════ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+.form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t3);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.field input, .field select {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-sm);
+  padding: 11px 12px;
+  font-size: 16px; /* prevents iOS zoom */
+  color: var(--t1);
+  font-family: var(--mono);
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.field input:focus, .field select:focus {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.12);
+}
+
+.field.full  { grid-column: span 2; }
+.field.full3 { grid-column: span 3; }
+
+/* ═══════════════════════════════════════════
+   Toggle — exact Apple iOS style
+═══════════════════════════════════════════ */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 2px;
+}
+
+.toggle-row label {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--t1);
+}
+
+.toggle {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+}
+.toggle input { display: none; }
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--bg2);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+.toggle.on .toggle-track {
+  background: var(--teal);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 27px; height: 27px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.12);
+  transition: left 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+  pointer-events: none;
+}
+.toggle.on .toggle-knob { left: 22px; }
+
+/* ═══════════════════════════════════════════
+   Calculate button — full-width Apple blue
+═══════════════════════════════════════════ */
+.calc-btn {
+  width: 100%;
+  background: linear-gradient(180deg, #1a8cff 0%, #0065e0 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  margin-top: 14px;
+  letter-spacing: 0.01em;
+  transition: opacity 0.15s, transform 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0,100,220,0.35), 0 1px 4px rgba(0,100,220,0.20);
+  -webkit-tap-highlight-color: transparent;
+}
+.calc-btn:active {
+  opacity: 0.88;
+  transform: scale(0.98);
+}
+
+/* ═══════════════════════════════════════════
+   Result section
+═══════════════════════════════════════════ */
+.result-section { display: none; }
+.result-section.visible { display: block; }
+
+/* ═══════════════════════════════════════════
+   Best result card — hero gradient
+═══════════════════════════════════════════ */
+.best-card {
+  background: linear-gradient(145deg, #007AFF 0%, #5E5CE6 55%, #30D158 100%);
+  border-radius: var(--r-xl);
+  padding: 24px 22px 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 30px rgba(0,122,255,0.28), 0 2px 8px rgba(94,92,230,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle bokeh circles */
+.best-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.best-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -20px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(48,209,88,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.best-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.75);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.best-count {
+  font-size: 64px;
+  font-weight: 800;
+  font-family: var(--mono);
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 2px;
+  letter-spacing: -2px;
+}
+
+.best-count span {
+  font-size: 22px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.72);
+  margin-left: 6px;
+  letter-spacing: 0;
+}
+
+#r-orient {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  font-family: var(--mono);
+  margin-top: 6px;
+  letter-spacing: 0.01em;
+}
+
+.best-stats-row {
+  display: flex;
+  gap: 0;
+  margin-top: 18px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.best-stat {
+  flex: 1;
+  padding: 11px 10px;
+  text-align: center;
+  position: relative;
+}
+
+.best-stat + .best-stat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 0.5px;
+  background: rgba(255,255,255,0.25);
+}
+
+.best-stat .sl {
+  font-size: 10px;
+  color: rgba(255,255,255,0.60);
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.best-stat .sv {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.best-stat .sv.warn {
+  color: #FFD60A;
+}
+
+.best-stat .sv.ok {
+  color: #ccffdd;
+}
+
+/* ═══════════════════════════════════════════
+   Progress bar — inside best card
+═══════════════════════════════════════════ */
+.progress-wrap { margin-top: 16px; }
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.progress-track {
+  height: 7px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.70), #ffffff);
+  border-radius: 4px;
+  transition: width 0.75s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ═══════════════════════════════════════════
+   Comparison table
+═══════════════════════════════════════════ */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -18px;
+  padding: 0 18px;
+}
+
+table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background: var(--bg);
+  color: var(--t3);
+  font-weight: 600;
+  padding: 9px 10px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--separator);
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+th:first-child { text-align: left; border-radius: 0; }
+
+td {
+  padding: 10px 10px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--separator);
+  font-family: var(--mono);
+  color: var(--t2);
+  white-space: nowrap;
+  font-size: 12.5px;
+}
+
+td:first-child { text-align: left; }
+
+tr:last-child td { border-bottom: none; }
+
+tr.best-row-tr td {
+  background: rgba(0,122,255,0.05);
+}
+
+tr.best-row-tr td:first-child {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.best-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #007AFF, #5E5CE6);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 20px;
+  margin-left: 5px;
+  vertical-align: middle;
+  font-family: var(--sans);
+  letter-spacing: 0.02em;
+}
+
+.warn-text { color: var(--warn) !important; font-weight: 600; }
+.ok-text   { color: var(--ok)   !important; font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   Diagram view tabs — segmented control
+═══════════════════════════════════════════ */
+.view-tabs {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 0;
+  margin-bottom: 14px;
+  background: var(--bg);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  border: 0.5px solid var(--border);
+}
+
+.vtab {
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vtab.active {
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+.canvas-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  border-radius: var(--r-sm);
+  padding: 10px 10px 6px;
+  border: 0.5px solid var(--border);
+}
+
+canvas { display: block; }
+
+.view-title {
+  font-size: 12px;
+  color: var(--t3);
+  margin-bottom: 8px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* info text panel */
+#info-detail {
+  font-size: 13.5px;
+  color: var(--t2);
+  line-height: 1.9;
+  font-family: var(--mono);
+  background: var(--bg);
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  border: 0.5px solid var(--border);
+  letter-spacing: 0.01em;
+}
+
+/* ═══════════════════════════════════════════
+   Divider inside card body
+═══════════════════════════════════════════ */
+.field-divider {
+  height: 0.5px;
+  background: var(--separator);
+  margin: 14px 0;
+}
+
+/* ═══════════════════════════════════════════
+   Print
+═══════════════════════════════════════════ */
+@media print {
+  .header, .input-section, .calc-btn, .view-tabs, .canvas-wrap { display: none !important; }
+  body { background: white; color: #000; padding: 0; }
+  .best-card { border: 1px solid #ccc; background: #f9f9f9; }
+}
+
+/* ═══════════════════════════════════════════
+   Responsive
+═══════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .form-grid        { grid-template-columns: 1fr; }
+  .form-grid.cols3  { grid-template-columns: 1fr 1fr; }
+  .type-tabs        { grid-template-columns: repeat(2,1fr); }
+  .best-count       { font-size: 52px; }
+}
+
+@media (min-width: 600px) {
+  .main        { padding: 20px 20px; }
+  .card-body   { padding: 20px 22px 22px; }
+  .best-count  { font-size: 72px; }
+}
+
+/* ═══════════════════════════════════════════
+   Subtle entrance animation
+═══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card, .best-card {
+  animation: fadeUp 0.35s cubic-bezier(0.25,0.46,0.45,0.94) both;
+}
+
+.result-section.visible .best-card { animation-delay: 0.05s; }
+.result-section.visible .card:nth-child(1) { animation-delay: 0.10s; }
+.result-section.visible .card:nth-child(2) { animation-delay: 0.15s; }
 </style>
 </head>
 <body>
 
+<!-- ═══════════ HEADER ═══════════ -->
 <div class="header">
-  <h1>📦 貨櫃裝載計算表</h1>
-  <p>Container Loading Calculator</p>
+  <div class="header-inner">
+    <div class="header-icon">📦</div>
+    <div class="header-text">
+      <h1>貨櫃裝載計算表</h1>
+      <p>Container Loading Calculator</p>
+    </div>
+  </div>
 </div>
 
 <div class="main">
 
-  <!-- 貨櫃設置 -->
+  <!-- ═══════════ 貨櫃規格 ═══════════ -->
+  <div class="section-label">貨櫃規格</div>
   <div class="card input-section">
     <div class="card-head open" onclick="toggleCard(this)">
-      <span class="icon">🚢</span> 貨櫃規格
+      <div class="card-head-icon blue">🚢</div>
+      <span class="card-head-title">貨櫃設置</span>
       <span class="chevron">▼</span>
     </div>
     <div class="card-body">
       <div class="type-tabs">
         <div class="type-tab active" data-type="40HQ" onclick="selectType(this)">
           40HQ
-          <div class="sub">最常用</div>
+          <span class="sub">最常用</span>
         </div>
         <div class="type-tab" data-type="20GP" onclick="selectType(this)">
           20GP
-          <div class="sub">標準</div>
+          <span class="sub">標準</span>
         </div>
         <div class="type-tab" data-type="40GP" onclick="selectType(this)">
           40GP
-          <div class="sub">標準</div>
+          <span class="sub">標準</span>
         </div>
         <div class="type-tab" data-type="45HQ" onclick="selectType(this)">
           45HQ
-          <div class="sub">加長</div>
+          <span class="sub">加長</span>
         </div>
       </div>
       <div class="form-grid">
@@ -491,10 +776,12 @@
     </div>
   </div>
 
-  <!-- 箱子資料 -->
+  <!-- ═══════════ 箱子規格 ═══════════ -->
+  <div class="section-label">箱子規格</div>
   <div class="card input-section">
     <div class="card-head open" onclick="toggleCard(this)">
-      <span class="icon">📫</span> 箱子規格
+      <div class="card-head-icon teal">📫</div>
+      <span class="card-head-title">成品箱尺寸</span>
       <span class="chevron">▼</span>
     </div>
     <div class="card-body">
@@ -512,7 +799,7 @@
           <input type="number" id="b-hgt" value="30" inputmode="decimal">
         </div>
       </div>
-      <div class="form-grid" style="margin-top:10px">
+      <div class="form-grid" style="margin-top:12px">
         <div class="field">
           <label>每箱重量 (kg)</label>
           <input type="number" id="b-wgt" value="15" inputmode="decimal">
@@ -534,14 +821,15 @@
     </div>
   </div>
 
-  <!-- 結果 -->
+  <!-- ═══════════ RESULTS ═══════════ -->
   <div class="result-section" id="result-section">
 
-    <!-- 最佳摘要 -->
+    <!-- Hero best result -->
+    <div class="section-label">最佳裝載結果</div>
     <div class="best-card">
       <div class="best-label">✦ 最佳裝載方案</div>
       <div class="best-count" id="r-count">0<span>箱</span></div>
-      <div id="r-orient" style="font-size:12px;color:var(--text3);margin-top:4px;font-family:var(--mono)"></div>
+      <div id="r-orient" style="font-size:12px;margin-top:4px;font-family:var(--mono)"></div>
       <div class="best-stats-row">
         <div class="best-stat">
           <div class="sl">擺放軸向</div>
@@ -552,7 +840,7 @@
           <div class="sv" id="r-weight">—</div>
         </div>
         <div class="best-stat">
-          <div class="sl">過重警告</div>
+          <div class="sl">過重狀態</div>
           <div class="sv" id="r-overw">—</div>
         </div>
       </div>
@@ -567,10 +855,12 @@
       </div>
     </div>
 
-    <!-- 方案比較 -->
+    <!-- Comparison table -->
+    <div class="section-label">方案比較</div>
     <div class="card">
       <div class="card-head open" onclick="toggleCard(this)">
-        <span class="icon">📊</span> 方案比較
+        <div class="card-head-icon orange">📊</div>
+        <span class="card-head-title">所有方案比較</span>
         <span class="chevron">▼</span>
       </div>
       <div class="card-body">
@@ -593,19 +883,22 @@
       </div>
     </div>
 
-    <!-- 視圖 -->
+    <!-- Diagrams -->
+    <div class="section-label">裝載示意圖</div>
     <div class="card">
       <div class="card-head open" onclick="toggleCard(this)">
-        <span class="icon">🗺</span> 裝載示意圖
+        <div class="card-head-icon indigo">🗺</div>
+        <span class="card-head-title">視圖預覽</span>
         <span class="chevron">▼</span>
       </div>
       <div class="card-body">
         <div class="view-tabs">
-          <div class="vtab active" data-view="top" onclick="switchView(this)">頂視圖</div>
-          <div class="vtab" data-view="front" onclick="switchView(this)">前視圖</div>
-          <div class="vtab" data-view="side" onclick="switchView(this)">側視圖</div>
-          <div class="vtab" data-view="info" onclick="switchView(this)">說明</div>
+          <div class="vtab active" data-view="top"   onclick="switchView(this)">頂視圖</div>
+          <div class="vtab"        data-view="front" onclick="switchView(this)">前視圖</div>
+          <div class="vtab"        data-view="side"  onclick="switchView(this)">側視圖</div>
+          <div class="vtab"        data-view="info"  onclick="switchView(this)">說明</div>
         </div>
+
         <div class="view-panel active" id="v-top">
           <div class="view-title">頂視圖（俯視）— 長 × 寬</div>
           <div class="canvas-wrap"><canvas id="top-canvas"></canvas></div>
@@ -619,7 +912,7 @@
           <div class="canvas-wrap"><canvas id="side-canvas"></canvas></div>
         </div>
         <div class="view-panel" id="v-info">
-          <div id="info-detail" style="font-size:13px;color:var(--text2);line-height:1.8;font-family:var(--mono)"></div>
+          <div id="info-detail"></div>
         </div>
       </div>
     </div>
@@ -786,9 +1079,9 @@ function drawAll(result, cLen, cWid, cHgt) {
     '#00695c','#f9a825','#ef6c00','#2e7d32','#1565c0'
   ];
 
-  const PAD  = 44; // left/bottom padding for axis labels
-  const PADR = 10; // right padding
-  const PADT = 28; // top padding for title
+  const PAD  = 44;
+  const PADR = 10;
+  const PADT = 28;
 
   function setupCanvas(id, cW, cH) {
     const canvas = document.getElementById(id);
@@ -811,23 +1104,19 @@ function drawAll(result, cLen, cWid, cHgt) {
         const w = bW * scale;
         const h = bH * scale;
 
-        // Fill
         ctx.fillStyle = FILLS[idx];
         ctx.fillRect(x, y, w, h);
 
-        // Subtle gradient overlay for depth
         const grad = ctx.createLinearGradient(x, y, x + w, y + h);
         grad.addColorStop(0, 'rgba(255,255,255,0.18)');
         grad.addColorStop(1, 'rgba(0,0,0,0.10)');
         ctx.fillStyle = grad;
         ctx.fillRect(x, y, w, h);
 
-        // Border
         ctx.strokeStyle = STROKES[idx];
         ctx.lineWidth = 1;
         ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
-        // Box number label if box is big enough
         if (w > 18 && h > 14) {
           const num = c * rows + r + 1;
           ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -841,17 +1130,15 @@ function drawAll(result, cLen, cWid, cHgt) {
   }
 
   function drawContainerFrame(ctx, ox, oy, cW, cH, scale) {
-    // Shadow
-    ctx.shadowColor = 'rgba(10,157,118,0.30)';
-    ctx.shadowBlur = 8;
-    ctx.strokeStyle = '#0a9d76';
+    ctx.shadowColor = 'rgba(0,122,255,0.30)';
+    ctx.shadowBlur = 10;
+    ctx.strokeStyle = '#007AFF';
     ctx.lineWidth = 2.5;
     ctx.strokeRect(ox, oy, cW * scale, cH * scale);
     ctx.shadowBlur = 0;
 
-    // Corner marks
     const m = 8;
-    ctx.strokeStyle = '#1a1f29';
+    ctx.strokeStyle = '#1c1c1e';
     ctx.lineWidth = 1.5;
     [[ox,oy],[ox+cW*scale,oy],[ox,oy+cH*scale],[ox+cW*scale,oy+cH*scale]].forEach(([cx,cy],i) => {
       const dx = i%2===0?1:-1, dy = i<2?1:-1;
@@ -860,14 +1147,12 @@ function drawAll(result, cLen, cWid, cHgt) {
   }
 
   function drawAxisLabels(ctx, ox, oy, cW, cH, scale, xLabel, yLabel, xUnit, yUnit) {
-    ctx.fillStyle = '#718096';
+    ctx.fillStyle = '#636366';
     ctx.font = '10px monospace';
     ctx.textAlign = 'center';
 
-    // X-axis: dimension label centred below
     ctx.fillText(`← ${xLabel}: ${xUnit} cm →`, ox + cW * scale / 2, oy + cH * scale + 20);
 
-    // Y-axis: rotated label on left
     ctx.save();
     ctx.translate(14, oy + cH * scale / 2);
     ctx.rotate(-Math.PI / 2);
@@ -876,7 +1161,7 @@ function drawAll(result, cLen, cWid, cHgt) {
   }
 
   function drawTitle(ctx, canvasW, text) {
-    ctx.fillStyle = '#1a1f29';
+    ctx.fillStyle = '#1c1c1e';
     ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -889,15 +1174,15 @@ function drawAll(result, cLen, cWid, cHgt) {
     const remW = (cW - usedW) * scale;
     const remH = (cH - usedH) * scale;
     if (remW > 2) {
-      ctx.fillStyle = 'rgba(248,81,73,0.12)';
+      ctx.fillStyle = 'rgba(255,59,48,0.10)';
       ctx.fillRect(rx, oy, remW, cH * scale);
-      ctx.strokeStyle = 'rgba(248,81,73,0.4)';
+      ctx.strokeStyle = 'rgba(255,59,48,0.40)';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 3]);
       ctx.strokeRect(rx, oy, remW, cH * scale);
       ctx.setLineDash([]);
       if (remW > 22) {
-        ctx.fillStyle = '#f85149';
+        ctx.fillStyle = '#FF3B30';
         ctx.font = '9px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -905,15 +1190,15 @@ function drawAll(result, cLen, cWid, cHgt) {
       }
     }
     if (remH > 2) {
-      ctx.fillStyle = 'rgba(248,81,73,0.10)';
+      ctx.fillStyle = 'rgba(255,59,48,0.08)';
       ctx.fillRect(ox, ry, usedW * scale, remH);
-      ctx.strokeStyle = 'rgba(248,81,73,0.35)';
+      ctx.strokeStyle = 'rgba(255,59,48,0.35)';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 3]);
       ctx.strokeRect(ox, ry, usedW * scale, remH);
       ctx.setLineDash([]);
       if (remH > 16) {
-        ctx.fillStyle = '#f85149';
+        ctx.fillStyle = '#FF3B30';
         ctx.font = '9px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -922,7 +1207,7 @@ function drawAll(result, cLen, cWid, cHgt) {
     }
   }
 
-  // ── TOP VIEW (長 × 寬) ──
+  // ── TOP VIEW ──
   {
     const { ctx, scale, ox, oy, cW, cH } = setupCanvas('top-canvas', cLen, cWid);
     drawTitle(ctx, ctx.canvas.width, `頂視圖（俯視）  ${lc} × ${wc} = ${lc*wc} 箱/層`);
@@ -932,7 +1217,7 @@ function drawAll(result, cLen, cWid, cHgt) {
     drawAxisLabels(ctx, ox, oy, cLen, cWid, scale, '長', '寬', cLen, cWid);
   }
 
-  // ── FRONT VIEW (寬 × 高) ──
+  // ── FRONT VIEW ──
   {
     const { ctx, scale, ox, oy, cW, cH } = setupCanvas('front-canvas', cWid, cHgt);
     drawTitle(ctx, ctx.canvas.width, `前視圖  ${wc} × ${hc} 層 = ${wc*hc} 格`);
@@ -942,7 +1227,7 @@ function drawAll(result, cLen, cWid, cHgt) {
     drawAxisLabels(ctx, ox, oy, cWid, cHgt, scale, '寬', '高', cWid, cHgt);
   }
 
-  // ── SIDE VIEW (長 × 高) ──
+  // ── SIDE VIEW ──
   {
     const { ctx, scale, ox, oy, cW, cH } = setupCanvas('side-canvas', cLen, cHgt);
     drawTitle(ctx, ctx.canvas.width, `側視圖  ${lc} × ${hc} 層`);
