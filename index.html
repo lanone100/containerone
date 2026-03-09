@@ -1,94 +1,110 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>貨櫃裝載計算表</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════
-   Apple-style Design System
-═══════════════════════════════════════════ */
-:root {
-  /* Apple SF-style palette */
-  --bg:           #f2f2f7;
-  --bg2:          #e5e5ea;
-  --surface:      #ffffff;
-  --surface-glass:rgba(255,255,255,0.82);
-  --border:       rgba(60,60,67,0.13);
-  --separator:    rgba(60,60,67,0.09);
+/* ═══════════════════════════════════════
+   LIGHT MODE tokens  (default)
+═══════════════════════════════════════ */
+:root, [data-theme="light"] {
+  --bg:             #f2f2f7;
+  --bg2:            #e5e5ea;
+  --bg3:            #d1d1d6;
+  --surface:        #ffffff;
+  --surface2:       #f2f2f7;
+  --surface-glass:  rgba(255,255,255,0.85);
+  --border:         rgba(60,60,67,0.13);
+  --sep:            rgba(60,60,67,0.09);
 
-  /* Brand colors — rich gradient trio */
-  --blue:         #007AFF;
-  --teal:         #30D158;
-  --indigo:       #5E5CE6;
-  --orange:       #FF9F0A;
-  --red:          #FF3B30;
-  --pink:         #FF375F;
-  --cyan:         #32ADE6;
+  --t1:   #1c1c1e;
+  --t2:   #3a3a3c;
+  --t3:   #636366;
+  --t4:   #aeaeb2;
 
-  /* Accent (primary action) */
-  --accent:       #007AFF;
-  --accent-light: rgba(0,122,255,0.10);
-  --accent2:      #30D158;
-  --accent2-light:rgba(48,209,88,0.10);
+  --accent:   #007AFF;
+  --ok:       #30D158;
+  --warn:     #FF3B30;
+  --teal:     #30D158;
 
-  /* Status */
-  --ok:           #30D158;
-  --ok-bg:        rgba(48,209,88,0.10);
-  --warn:         #FF3B30;
-  --warn-bg:      rgba(255,59,48,0.10);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.11), 0 2px 8px rgba(0,0,0,0.06);
 
-  /* Text hierarchy */
-  --t1:           #1c1c1e;
-  --t2:           #3a3a3c;
-  --t3:           #636366;
-  --t4:           #aeaeb2;
-
-  /* Typography */
-  --sans:  'Noto Sans TC', -apple-system, 'SF Pro Text', sans-serif;
-  --mono:  'JetBrains Mono', 'SF Mono', monospace;
-
-  /* Shape */
-  --r-sm:   10px;
-  --r-md:   14px;
-  --r-lg:   20px;
-  --r-xl:   28px;
-
-  /* Shadow */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  /* canvas colors */
+  --canvas-bg:     #f2f2f7;
+  --canvas-title:  #1c1c1e;
+  --canvas-axis:   #636366;
+  --canvas-corner: #1c1c1e;
 }
 
-/* ═══════════════════════════════════════════
-   Base Reset
-═══════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ═══════════════════════════════════════
+   DARK MODE tokens
+═══════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:             #000000;
+  --bg2:            #1c1c1e;
+  --bg3:            #2c2c2e;
+  --surface:        #1c1c1e;
+  --surface2:       #2c2c2e;
+  --surface-glass:  rgba(28,28,30,0.88);
+  --border:         rgba(255,255,255,0.10);
+  --sep:            rgba(255,255,255,0.07);
 
+  --t1:   #ffffff;
+  --t2:   #ebebf5cc;
+  --t3:   #ebebf599;
+  --t4:   #ebebf54d;
+
+  --accent:   #0A84FF;
+  --ok:       #30D158;
+  --warn:     #FF453A;
+  --teal:     #30D158;
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.40);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.50);
+  --shadow-lg: 0 8px 36px rgba(0,0,0,0.60);
+
+  --canvas-bg:     #1c1c1e;
+  --canvas-title:  #ffffff;
+  --canvas-axis:   #8e8e93;
+  --canvas-corner: #ffffff;
+}
+
+/* ═══════════════════════════════════════
+   Theme transition
+═══════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  transition: background-color 0.28s ease, border-color 0.28s ease, color 0.20s ease, box-shadow 0.28s ease;
+}
+
+/* ═══════════════════════════════════════
+   Base
+═══════════════════════════════════════ */
 body {
-  font-family: var(--sans);
+  font-family: 'Noto Sans TC', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--t1);
   min-height: 100vh;
-  padding-bottom: 48px;
+  padding-bottom: 52px;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ═══════════════════════════════════════════
-   Header — frosted glass, sticky
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
 .header {
   background: var(--surface-glass);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
   border-bottom: 0.5px solid var(--border);
-  padding: 18px 20px 14px;
-  text-align: center;
+  padding: 14px 16px 12px;
   position: sticky;
   top: 0;
-  z-index: 200;
+  z-index: 300;
 }
 
 .header-inner {
@@ -97,66 +113,87 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  justify-content: center;
 }
 
 .header-icon {
-  width: 38px; height: 38px;
+  width: 36px; height: 36px;
   background: linear-gradient(145deg, #007AFF, #5E5CE6);
-  border-radius: 10px;
+  border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  box-shadow: 0 2px 8px rgba(0,122,255,0.30);
+  font-size: 19px;
+  box-shadow: 0 2px 8px rgba(0,122,255,0.32);
   flex-shrink: 0;
 }
 
-.header-text { text-align: left; }
+.header-text { flex: 1; }
 
 .header h1 {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--t1);
   letter-spacing: -0.3px;
+  line-height: 1.2;
 }
 
 .header p {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--t3);
+  font-family: 'JetBrains Mono', monospace;
   margin-top: 1px;
-  font-family: var(--mono);
-  letter-spacing: 0.02em;
 }
 
-/* ═══════════════════════════════════════════
-   Main layout
-═══════════════════════════════════════════ */
-.main {
-  padding: 16px 16px;
-  max-width: 600px;
-  margin: 0 auto;
+/* ── Theme toggle button ── */
+.theme-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background-color 0.25s, box-shadow 0.25s;
 }
 
-/* ═══════════════════════════════════════════
-   Section label (iOS grouped style)
-═══════════════════════════════════════════ */
+.theme-btn:active { transform: scale(0.88); }
+
+.theme-btn .icon-sun,
+.theme-btn .icon-moon { transition: opacity 0.2s, transform 0.3s; position: absolute; }
+
+.theme-btn .icon-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+.theme-btn .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+
+[data-theme="dark"] .theme-btn .icon-sun  { opacity: 0; transform: rotate(90deg) scale(0.6); }
+[data-theme="dark"] .theme-btn .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+
+/* ═══════════════════════════════════════
+   Main
+═══════════════════════════════════════ */
+.main { padding: 14px 16px; max-width: 600px; margin: 0 auto; }
+
+/* ═══════════════════════════════════════
+   Section label
+═══════════════════════════════════════ */
 .section-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--t3);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0 4px;
-  margin: 20px 0 8px;
+  margin: 22px 0 8px;
 }
-.section-label:first-child { margin-top: 8px; }
+.section-label:first-child { margin-top: 6px; }
 
-/* ═══════════════════════════════════════════
-   Card — iOS grouped list style
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   Card
+═══════════════════════════════════════ */
 .card {
   background: var(--surface);
-  border-radius: var(--r-lg);
-  margin-bottom: 16px;
+  border-radius: 20px;
+  margin-bottom: 14px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 0.5px solid var(--border);
@@ -166,8 +203,8 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 18px 12px;
-  border-bottom: 0.5px solid var(--separator);
+  padding: 13px 16px 11px;
+  border-bottom: 0.5px solid var(--sep);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -178,14 +215,14 @@ body {
   width: 30px; height: 30px;
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 15px;
   flex-shrink: 0;
 }
 
-.card-head-icon.blue   { background: linear-gradient(145deg, #007AFF, #5AC8FA); }
-.card-head-icon.teal   { background: linear-gradient(145deg, #30D158, #34C759); }
-.card-head-icon.indigo { background: linear-gradient(145deg, #5E5CE6, #AF52DE); }
-.card-head-icon.orange { background: linear-gradient(145deg, #FF9F0A, #FF6B00); }
+.card-head-icon.blue   { background: linear-gradient(145deg,#007AFF,#5AC8FA); }
+.card-head-icon.teal   { background: linear-gradient(145deg,#30D158,#34C759); }
+.card-head-icon.indigo { background: linear-gradient(145deg,#5E5CE6,#AF52DE); }
+.card-head-icon.orange { background: linear-gradient(145deg,#FF9F0A,#FF6B00); }
 
 .card-head-title {
   font-size: 15px;
@@ -196,26 +233,25 @@ body {
 }
 
 .chevron {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--t4);
   transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
-  margin-left: auto;
 }
 .card-head.open .chevron { transform: rotate(180deg); }
 
-.card-body { padding: 16px 18px 18px; }
+.card-body { padding: 16px 16px 18px; }
 .card-body.collapsed { display: none; }
 
-/* ═══════════════════════════════════════════
-   Container type selector — pill tabs
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   Container type tabs
+═══════════════════════════════════════ */
 .type-tabs {
   display: grid;
   grid-template-columns: repeat(4,1fr);
-  gap: 7px;
-  margin-bottom: 18px;
-  background: var(--bg);
-  border-radius: var(--r-md);
+  gap: 6px;
+  margin-bottom: 16px;
+  background: var(--bg2);
+  border-radius: 14px;
   padding: 5px;
 }
 
@@ -227,12 +263,12 @@ body {
   font-weight: 600;
   color: var(--t3);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.25,0.46,0.45,0.94);
-  font-family: var(--mono);
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.02em;
   border: none;
   background: transparent;
   -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .type-tab.active {
@@ -246,21 +282,16 @@ body {
   font-weight: 400;
   color: var(--t4);
   margin-top: 2px;
-  font-family: var(--sans);
-  letter-spacing: 0;
+  font-family: 'Noto Sans TC', sans-serif;
   display: block;
 }
-
 .type-tab.active .sub { color: rgba(0,122,255,0.65); }
+[data-theme="dark"] .type-tab.active .sub { color: rgba(10,132,255,0.65); }
 
-/* ═══════════════════════════════════════════
-   Form fields — iOS style
-═══════════════════════════════════════════ */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 11px;
-}
+/* ═══════════════════════════════════════
+   Form fields
+═══════════════════════════════════════ */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
 
 .field label {
@@ -268,22 +299,20 @@ body {
   font-size: 12px;
   font-weight: 500;
   color: var(--t3);
-  margin-bottom: 6px;
-  letter-spacing: 0.01em;
+  margin-bottom: 5px;
 }
 
 .field input, .field select {
   width: 100%;
-  background: var(--bg);
+  background: var(--bg2);
   border: 1.5px solid transparent;
-  border-radius: var(--r-sm);
+  border-radius: 10px;
   padding: 11px 12px;
-  font-size: 16px; /* prevents iOS zoom */
+  font-size: 16px;
   color: var(--t1);
-  font-family: var(--mono);
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
   outline: none;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -291,15 +320,20 @@ body {
 .field input:focus, .field select:focus {
   background: var(--surface);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,122,255,0.12);
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.14);
+}
+
+[data-theme="dark"] .field input:focus,
+[data-theme="dark"] .field select:focus {
+  box-shadow: 0 0 0 3px rgba(10,132,255,0.22);
 }
 
 .field.full  { grid-column: span 2; }
 .field.full3 { grid-column: span 3; }
 
-/* ═══════════════════════════════════════════
-   Toggle — exact Apple iOS style
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   iOS Toggle
+═══════════════════════════════════════ */
 .toggle-row {
   display: flex;
   align-items: center;
@@ -315,24 +349,20 @@ body {
 
 .toggle {
   position: relative;
-  width: 51px;
-  height: 31px;
+  width: 51px; height: 31px;
   flex-shrink: 0;
 }
 .toggle input { display: none; }
 
 .toggle-track {
-  position: absolute;
-  inset: 0;
-  background: var(--bg2);
+  position: absolute; inset: 0;
+  background: var(--bg3);
   border-radius: 16px;
   cursor: pointer;
-  transition: background 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+  transition: background 0.25s;
 }
 
-.toggle.on .toggle-track {
-  background: var(--teal);
-}
+.toggle.on .toggle-track { background: var(--teal); }
 
 .toggle-knob {
   position: absolute;
@@ -340,75 +370,82 @@ body {
   width: 27px; height: 27px;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.24);
   transition: left 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
   pointer-events: none;
 }
 .toggle.on .toggle-knob { left: 22px; }
 
-/* ═══════════════════════════════════════════
-   Calculate button — full-width Apple blue
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   Calc button
+═══════════════════════════════════════ */
 .calc-btn {
   width: 100%;
   background: linear-gradient(180deg, #1a8cff 0%, #0065e0 100%);
-  color: #ffffff;
+  color: #fff;
   border: none;
-  border-radius: var(--r-md);
+  border-radius: 14px;
   padding: 15px 20px;
   font-size: 16px;
   font-weight: 600;
-  font-family: var(--sans);
+  font-family: 'Noto Sans TC', sans-serif;
   cursor: pointer;
   margin-top: 14px;
   letter-spacing: 0.01em;
-  transition: opacity 0.15s, transform 0.12s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(0,100,220,0.35), 0 1px 4px rgba(0,100,220,0.20);
+  box-shadow: 0 4px 16px rgba(0,100,220,0.38);
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s, transform 0.12s, box-shadow 0.2s;
 }
-.calc-btn:active {
-  opacity: 0.88;
-  transform: scale(0.98);
+.calc-btn:active { opacity: 0.88; transform: scale(0.98); }
+
+[data-theme="dark"] .calc-btn {
+  background: linear-gradient(180deg, #1a8cff 0%, #0071e3 100%);
+  box-shadow: 0 4px 18px rgba(0,113,227,0.42);
 }
 
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════
    Result section
-═══════════════════════════════════════════ */
+═══════════════════════════════════════ */
 .result-section { display: none; }
 .result-section.visible { display: block; }
 
-/* ═══════════════════════════════════════════
-   Best result card — hero gradient
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   Best card — hero gradient (always vivid)
+═══════════════════════════════════════ */
 .best-card {
   background: linear-gradient(145deg, #007AFF 0%, #5E5CE6 55%, #30D158 100%);
-  border-radius: var(--r-xl);
-  padding: 24px 22px 22px;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 30px rgba(0,122,255,0.28), 0 2px 8px rgba(94,92,230,0.15);
+  border-radius: 28px;
+  padding: 24px 20px 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 32px rgba(0,122,255,0.30), 0 2px 10px rgba(94,92,230,0.18);
   position: relative;
   overflow: hidden;
+  border: none;
+  transition: box-shadow 0.28s;
 }
 
-/* subtle bokeh circles */
+[data-theme="dark"] .best-card {
+  box-shadow: 0 8px 40px rgba(0,122,255,0.36), 0 2px 12px rgba(94,92,230,0.22);
+}
+
 .best-card::before {
   content: '';
   position: absolute;
-  top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+  top: -50px; right: -50px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255,255,255,0.13) 0%, transparent 70%);
   pointer-events: none;
 }
 .best-card::after {
   content: '';
   position: absolute;
   bottom: -30px; left: -20px;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(48,209,88,0.18) 0%, transparent 70%);
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(48,209,88,0.20) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -416,7 +453,7 @@ body {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.72);
   text-transform: uppercase;
   margin-bottom: 8px;
 }
@@ -424,8 +461,8 @@ body {
 .best-count {
   font-size: 64px;
   font-weight: 800;
-  font-family: var(--mono);
-  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
   line-height: 1;
   margin-bottom: 2px;
   letter-spacing: -2px;
@@ -434,22 +471,20 @@ body {
 .best-count span {
   font-size: 22px;
   font-weight: 400;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.70);
   margin-left: 6px;
   letter-spacing: 0;
 }
 
 #r-orient {
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
-  font-family: var(--mono);
+  color: rgba(255,255,255,0.62);
+  font-family: 'JetBrains Mono', monospace;
   margin-top: 6px;
-  letter-spacing: 0.01em;
 }
 
 .best-stats-row {
   display: flex;
-  gap: 0;
   margin-top: 18px;
   background: rgba(255,255,255,0.15);
   border-radius: 14px;
@@ -458,7 +493,7 @@ body {
 
 .best-stat {
   flex: 1;
-  padding: 11px 10px;
+  padding: 11px 8px;
   text-align: center;
   position: relative;
 }
@@ -468,142 +503,118 @@ body {
   position: absolute;
   left: 0; top: 20%; bottom: 20%;
   width: 0.5px;
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.24);
 }
 
 .best-stat .sl {
   font-size: 10px;
-  color: rgba(255,255,255,0.60);
+  color: rgba(255,255,255,0.58);
   margin-bottom: 4px;
   font-weight: 500;
   letter-spacing: 0.02em;
 }
 
 .best-stat .sv {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  font-family: var(--mono);
-  color: #ffffff;
-  letter-spacing: 0.01em;
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
 }
 
-.best-stat .sv.warn {
-  color: #FFD60A;
-}
+.best-stat .sv.warn { color: #FFD60A; }
+.best-stat .sv.ok   { color: #ccffdd; }
 
-.best-stat .sv.ok {
-  color: #ccffdd;
-}
-
-/* ═══════════════════════════════════════════
-   Progress bar — inside best card
-═══════════════════════════════════════════ */
 .progress-wrap { margin-top: 16px; }
 
 .progress-label {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.62);
   margin-bottom: 6px;
   font-weight: 500;
 }
 
 .progress-track {
   height: 7px;
-  background: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.20);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.70), #ffffff);
+  background: linear-gradient(90deg, rgba(255,255,255,0.65), #fff);
   border-radius: 4px;
   transition: width 0.75s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════
    Comparison table
-═══════════════════════════════════════════ */
+═══════════════════════════════════════ */
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin: 0 -18px;
-  padding: 0 18px;
+  margin: 0 -16px;
+  padding: 0 16px;
 }
 
-table {
-  width: 100%;
-  min-width: 500px;
-  border-collapse: collapse;
-  font-size: 13px;
-}
+table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 13px; }
 
 th {
-  background: var(--bg);
+  background: var(--surface2);
   color: var(--t3);
   font-weight: 600;
   padding: 9px 10px;
   text-align: center;
-  border-bottom: 0.5px solid var(--separator);
+  border-bottom: 0.5px solid var(--sep);
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 11.5px;
   letter-spacing: 0.02em;
 }
-
-th:first-child { text-align: left; border-radius: 0; }
+th:first-child { text-align: left; }
 
 td {
   padding: 10px 10px;
   text-align: center;
-  border-bottom: 0.5px solid var(--separator);
-  font-family: var(--mono);
+  border-bottom: 0.5px solid var(--sep);
+  font-family: 'JetBrains Mono', monospace;
   color: var(--t2);
   white-space: nowrap;
   font-size: 12.5px;
 }
-
 td:first-child { text-align: left; }
-
 tr:last-child td { border-bottom: none; }
 
-tr.best-row-tr td {
-  background: rgba(0,122,255,0.05);
-}
-
-tr.best-row-tr td:first-child {
-  color: var(--accent);
-  font-weight: 600;
-}
+tr.best-row-tr td { background: rgba(0,122,255,0.06); }
+[data-theme="dark"] tr.best-row-tr td { background: rgba(10,132,255,0.10); }
+tr.best-row-tr td:first-child { color: var(--accent); font-weight: 600; }
 
 .best-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #007AFF, #5E5CE6);
-  color: white;
+  background: linear-gradient(135deg,#007AFF,#5E5CE6);
+  color: #fff;
   font-size: 9px;
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 20px;
   margin-left: 5px;
   vertical-align: middle;
-  font-family: var(--sans);
-  letter-spacing: 0.02em;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 
 .warn-text { color: var(--warn) !important; font-weight: 600; }
 .ok-text   { color: var(--ok)   !important; font-weight: 600; }
 
-/* ═══════════════════════════════════════════
-   Diagram view tabs — segmented control
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   View tabs — segmented control
+═══════════════════════════════════════ */
 .view-tabs {
   display: grid;
   grid-template-columns: repeat(4,1fr);
-  gap: 0;
   margin-bottom: 14px;
-  background: var(--bg);
-  border-radius: var(--r-sm);
+  background: var(--bg2);
+  border-radius: 10px;
   padding: 3px;
   border: 0.5px solid var(--border);
 }
@@ -612,11 +623,11 @@ tr.best-row-tr td:first-child {
   border-radius: 8px;
   padding: 8px 4px;
   text-align: center;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--t3);
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+  transition: all 0.18s;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -633,8 +644,8 @@ tr.best-row-tr td:first-child {
 .canvas-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  background: var(--bg);
-  border-radius: var(--r-sm);
+  background: var(--canvas-bg);
+  border-radius: 10px;
   padding: 10px 10px 6px;
   border: 0.5px solid var(--border);
 }
@@ -649,73 +660,63 @@ canvas { display: block; }
   letter-spacing: 0.03em;
 }
 
-/* info text panel */
 #info-detail {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--t2);
   line-height: 1.9;
-  font-family: var(--mono);
-  background: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface2);
   padding: 14px 16px;
-  border-radius: var(--r-sm);
+  border-radius: 10px;
   border: 0.5px solid var(--border);
   letter-spacing: 0.01em;
 }
 
-/* ═══════════════════════════════════════════
-   Divider inside card body
-═══════════════════════════════════════════ */
-.field-divider {
-  height: 0.5px;
-  background: var(--separator);
-  margin: 14px 0;
-}
-
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════
    Print
-═══════════════════════════════════════════ */
+═══════════════════════════════════════ */
 @media print {
   .header, .input-section, .calc-btn, .view-tabs, .canvas-wrap { display: none !important; }
-  body { background: white; color: #000; padding: 0; }
+  body { background: white; color: #000; }
   .best-card { border: 1px solid #ccc; background: #f9f9f9; }
 }
 
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════
    Responsive
-═══════════════════════════════════════════ */
+═══════════════════════════════════════ */
 @media (max-width: 360px) {
   .form-grid        { grid-template-columns: 1fr; }
   .form-grid.cols3  { grid-template-columns: 1fr 1fr; }
   .type-tabs        { grid-template-columns: repeat(2,1fr); }
-  .best-count       { font-size: 52px; }
+  .best-count       { font-size: 50px; }
 }
 
 @media (min-width: 600px) {
-  .main        { padding: 20px 20px; }
-  .card-body   { padding: 20px 22px 22px; }
-  .best-count  { font-size: 72px; }
+  .main       { padding: 18px 20px; }
+  .card-body  { padding: 18px 20px 22px; }
+  .best-count { font-size: 72px; }
 }
 
-/* ═══════════════════════════════════════════
-   Subtle entrance animation
-═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   Entrance animation
+═══════════════════════════════════════ */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-.card, .best-card {
-  animation: fadeUp 0.35s cubic-bezier(0.25,0.46,0.45,0.94) both;
-}
-
-.result-section.visible .best-card { animation-delay: 0.05s; }
+.card { animation: fadeUp 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+.result-section.visible .best-card     { animation: fadeUp 0.35s 0.04s both; }
 .result-section.visible .card:nth-child(1) { animation-delay: 0.10s; }
-.result-section.visible .card:nth-child(2) { animation-delay: 0.15s; }
+.result-section.visible .card:nth-child(2) { animation-delay: 0.16s; }
+
+/* ═══════════════════════════════════════
+   Dark mode status-bar color meta update
+═══════════════════════════════════════ */
 </style>
 </head>
 <body>
 
-<!-- ═══════════ HEADER ═══════════ -->
+<!-- ══════════ HEADER ══════════ -->
 <div class="header">
   <div class="header-inner">
     <div class="header-icon">📦</div>
@@ -723,12 +724,16 @@ canvas { display: block; }
       <h1>貨櫃裝載計算表</h1>
       <p>Container Loading Calculator</p>
     </div>
+    <button class="theme-btn" onclick="toggleTheme()" title="切換深色／淺色" aria-label="切換主題">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+    </button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- ═══════════ 貨櫃規格 ═══════════ -->
+  <!-- ══════════ 貨櫃規格 ══════════ -->
   <div class="section-label">貨櫃規格</div>
   <div class="card input-section">
     <div class="card-head open" onclick="toggleCard(this)">
@@ -739,20 +744,16 @@ canvas { display: block; }
     <div class="card-body">
       <div class="type-tabs">
         <div class="type-tab active" data-type="40HQ" onclick="selectType(this)">
-          40HQ
-          <span class="sub">最常用</span>
+          40HQ<span class="sub">最常用</span>
         </div>
         <div class="type-tab" data-type="20GP" onclick="selectType(this)">
-          20GP
-          <span class="sub">標準</span>
+          20GP<span class="sub">標準</span>
         </div>
         <div class="type-tab" data-type="40GP" onclick="selectType(this)">
-          40GP
-          <span class="sub">標準</span>
+          40GP<span class="sub">標準</span>
         </div>
         <div class="type-tab" data-type="45HQ" onclick="selectType(this)">
-          45HQ
-          <span class="sub">加長</span>
+          45HQ<span class="sub">加長</span>
         </div>
       </div>
       <div class="form-grid">
@@ -776,7 +777,7 @@ canvas { display: block; }
     </div>
   </div>
 
-  <!-- ═══════════ 箱子規格 ═══════════ -->
+  <!-- ══════════ 箱子規格 ══════════ -->
   <div class="section-label">箱子規格</div>
   <div class="card input-section">
     <div class="card-head open" onclick="toggleCard(this)">
@@ -821,15 +822,14 @@ canvas { display: block; }
     </div>
   </div>
 
-  <!-- ═══════════ RESULTS ═══════════ -->
+  <!-- ══════════ RESULTS ══════════ -->
   <div class="result-section" id="result-section">
 
-    <!-- Hero best result -->
     <div class="section-label">最佳裝載結果</div>
     <div class="best-card">
       <div class="best-label">✦ 最佳裝載方案</div>
       <div class="best-count" id="r-count">0<span>箱</span></div>
-      <div id="r-orient" style="font-size:12px;margin-top:4px;font-family:var(--mono)"></div>
+      <div id="r-orient"></div>
       <div class="best-stats-row">
         <div class="best-stat">
           <div class="sl">擺放軸向</div>
@@ -855,7 +855,6 @@ canvas { display: block; }
       </div>
     </div>
 
-    <!-- Comparison table -->
     <div class="section-label">方案比較</div>
     <div class="card">
       <div class="card-head open" onclick="toggleCard(this)">
@@ -868,13 +867,8 @@ canvas { display: block; }
           <table>
             <thead>
               <tr>
-                <th>方向</th>
-                <th>尺寸</th>
-                <th>長×寬×高</th>
-                <th>總箱</th>
-                <th>重量(kg)</th>
-                <th>利用率</th>
-                <th>狀態</th>
+                <th>方向</th><th>尺寸</th><th>長×寬×高</th>
+                <th>總箱</th><th>重量(kg)</th><th>利用率</th><th>狀態</th>
               </tr>
             </thead>
             <tbody id="results-body"></tbody>
@@ -883,7 +877,6 @@ canvas { display: block; }
       </div>
     </div>
 
-    <!-- Diagrams -->
     <div class="section-label">裝載示意圖</div>
     <div class="card">
       <div class="card-head open" onclick="toggleCard(this)">
@@ -898,7 +891,6 @@ canvas { display: block; }
           <div class="vtab"        data-view="side"  onclick="switchView(this)">側視圖</div>
           <div class="vtab"        data-view="info"  onclick="switchView(this)">說明</div>
         </div>
-
         <div class="view-panel active" id="v-top">
           <div class="view-title">頂視圖（俯視）— 長 × 寬</div>
           <div class="canvas-wrap"><canvas id="top-canvas"></canvas></div>
@@ -918,10 +910,49 @@ canvas { display: block; }
     </div>
 
   </div><!-- /result-section -->
-
 </div><!-- /main -->
 
 <script>
+/* ─────────────────────────────────────
+   THEME TOGGLE
+───────────────────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('theme', next); } catch(e) {}
+  // Redraw canvas with new colors if results are visible
+  if (document.getElementById('result-section').classList.contains('visible')) {
+    if (window._lastCalcState) {
+      const s = window._lastCalcState;
+      drawAll(s.best, s.cLen, s.cWid, s.cHgt);
+    }
+  }
+}
+
+// Restore saved theme
+(function() {
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+      document.documentElement.setAttribute('data-theme', 'dark');
+  } catch(e) {}
+})();
+
+// Listen for system preference change
+try {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
+  });
+} catch(e) {}
+
+/* ─────────────────────────────────────
+   PRESETS & HELPERS
+───────────────────────────────────── */
 const PRESETS = {
   '20GP': { len:590,  wid:234, hgt:238, wgt:21770 },
   '40GP': { len:1201, wid:234, hgt:238, wgt:26760 },
@@ -931,13 +962,8 @@ const PRESETS = {
 
 function toggleCard(head) {
   const body = head.nextElementSibling;
-  const isOpen = head.classList.contains('open');
   head.classList.toggle('open');
-  if (isOpen) {
-    body.classList.add('collapsed');
-  } else {
-    body.classList.remove('collapsed');
-  }
+  body.classList.toggle('collapsed', !head.classList.contains('open'));
 }
 
 function selectType(el) {
@@ -959,10 +985,12 @@ function switchView(el) {
 
 function toggleRot(el) {
   el.classList.toggle('on');
-  const cb = document.getElementById('allow-rot');
-  cb.checked = el.classList.contains('on');
+  document.getElementById('allow-rot').checked = el.classList.contains('on');
 }
 
+/* ─────────────────────────────────────
+   CALCULATE
+───────────────────────────────────── */
 function calculate(doScroll = true) {
   const cLen = +document.getElementById('c-len').value;
   const cWid = +document.getElementById('c-wid').value;
@@ -996,14 +1024,15 @@ function calculate(doScroll = true) {
     const adj = ow ? Math.floor(cWgt/bWgt) : total;
     const util = (total*(l*w*h)/(cLen*cWid*cHgt)*100).toFixed(1);
     return { name:o.name, dims:`${l}×${w}×${h}`, axis:`${lc}×${wc}×${hc}`,
-             total, tw:tw.toFixed(0), ow, adj, util,
-             boxDims:[l,w,h], counts:[lc,wc,hc] };
+             total, tw:tw.toFixed(0), ow, adj, util, boxDims:[l,w,h], counts:[lc,wc,hc] };
   });
 
   results.sort((a,b) => b.adj - a.adj);
   const best = results[0];
 
-  // Best card
+  // Save state for theme-redraw
+  window._lastCalcState = { best, cLen, cWid, cHgt };
+
   document.getElementById('r-count').innerHTML = `${best.adj}<span>箱</span>`;
   document.getElementById('r-orient').textContent = `擺放方式：${best.name}  ／  箱子尺寸：${best.dims} cm`;
   document.getElementById('r-axis').textContent = best.axis;
@@ -1015,7 +1044,6 @@ function calculate(doScroll = true) {
   document.getElementById('r-util').textContent = best.util + '%';
   document.getElementById('r-prog').style.width = Math.min(parseFloat(best.util), 100) + '%';
 
-  // Table
   const tb = document.getElementById('results-body');
   tb.innerHTML = '';
   results.forEach((r, i) => {
@@ -1023,8 +1051,7 @@ function calculate(doScroll = true) {
     if (i===0) tr.className = 'best-row-tr';
     tr.innerHTML = `
       <td>${r.name}${i===0?'<span class="best-badge">最佳</span>':''}</td>
-      <td>${r.dims}</td>
-      <td>${r.axis}</td>
+      <td>${r.dims}</td><td>${r.axis}</td>
       <td>${r.adj}${r.ow?'<span class="warn-text">*</span>':''}</td>
       <td class="${r.ow?'warn-text':''}">${r.tw}</td>
       <td>${r.util}%</td>
@@ -1033,7 +1060,6 @@ function calculate(doScroll = true) {
     tb.appendChild(tr);
   });
 
-  // Info
   document.getElementById('info-detail').innerHTML = `
 貨櫃類型：${document.querySelectorAll('.type-tab.active')[0]?.dataset.type||'自訂'}<br>
 貨櫃內尺寸：${cLen} × ${cWid} × ${cHgt} cm<br>
@@ -1047,29 +1073,35 @@ function calculate(doScroll = true) {
 擺放方式：${best.name}<br>
 軸向排列：${best.axis}（長×寬×高）<br>
 總重量：${best.tw} kg${best.ow?' ⚠ 超重':''}<br>
-空間利用率：${best.util}%
-  `.trim();
+空間利用率：${best.util}%`.trim();
 
-  // Draw
   drawAll(best, cLen, cWid, cHgt);
 
-  // Show result
   const rs = document.getElementById('result-section');
   rs.classList.add('visible');
   if (doScroll) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        rs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
-    });
+    requestAnimationFrame(() => setTimeout(() => rs.scrollIntoView({ behavior:'smooth', block:'start' }), 80));
   }
+}
+
+/* ─────────────────────────────────────
+   DRAW CANVAS  (theme-aware)
+───────────────────────────────────── */
+function getThemeColors() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    bg:     s.getPropertyValue('--canvas-bg').trim()     || '#f2f2f7',
+    title:  s.getPropertyValue('--canvas-title').trim()  || '#1c1c1e',
+    axis:   s.getPropertyValue('--canvas-axis').trim()   || '#636366',
+    corner: s.getPropertyValue('--canvas-corner').trim() || '#1c1c1e',
+  };
 }
 
 function drawAll(result, cLen, cWid, cHgt) {
   const [bLen, bWid, bHgt] = result.boxDims;
-  const [lc, wc, hc] = result.counts;
+  const [lc, wc, hc]       = result.counts;
+  const TC = getThemeColors();
 
-  // Bright, distinct fill colors (light enough to show labels on top)
   const FILLS = [
     '#4fc3f7','#81c784','#ffb74d','#f48fb1','#ce93d8',
     '#80cbc4','#fff176','#ffcc80','#a5d6a7','#90caf9'
@@ -1079,9 +1111,7 @@ function drawAll(result, cLen, cWid, cHgt) {
     '#00695c','#f9a825','#ef6c00','#2e7d32','#1565c0'
   ];
 
-  const PAD  = 44;
-  const PADR = 10;
-  const PADT = 28;
+  const PAD=44, PADR=10, PADT=28;
 
   function setupCanvas(id, cW, cH) {
     const canvas = document.getElementById(id);
@@ -1092,156 +1122,115 @@ function drawAll(result, cLen, cWid, cHgt) {
     canvas.height = Math.ceil(cH * scale) + PADT + PAD;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return { ctx, scale, ox: PAD, oy: PADT, cW, cH };
+    // fill canvas background
+    ctx.fillStyle = TC.bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return { ctx, scale, ox:PAD, oy:PADT, cW, cH };
   }
 
-  function drawBoxGrid(ctx, ox, oy, scale, cols, rows, bW, bH, colorIdx) {
-    for (let c = 0; c < cols; c++) {
-      for (let r = 0; r < rows; r++) {
-        const idx = (c * 3 + r * 7) % FILLS.length;
-        const x = ox + c * bW * scale;
-        const y = oy + r * bH * scale;
-        const w = bW * scale;
-        const h = bH * scale;
-
+  function drawBoxGrid(ctx, ox, oy, scale, cols, rows, bW, bH) {
+    for (let c=0; c<cols; c++) {
+      for (let r=0; r<rows; r++) {
+        const idx = (c*3+r*7) % FILLS.length;
+        const x=ox+c*bW*scale, y=oy+r*bH*scale, w=bW*scale, h=bH*scale;
         ctx.fillStyle = FILLS[idx];
-        ctx.fillRect(x, y, w, h);
-
-        const grad = ctx.createLinearGradient(x, y, x + w, y + h);
-        grad.addColorStop(0, 'rgba(255,255,255,0.18)');
-        grad.addColorStop(1, 'rgba(0,0,0,0.10)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(x, y, w, h);
-
-        ctx.strokeStyle = STROKES[idx];
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
-
-        if (w > 18 && h > 14) {
-          const num = c * rows + r + 1;
-          ctx.fillStyle = 'rgba(0,0,0,0.55)';
-          ctx.font = `bold ${Math.min(11, Math.floor(Math.min(w,h)*0.38))}px monospace`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(num, x + w / 2, y + h / 2);
+        ctx.fillRect(x,y,w,h);
+        const g = ctx.createLinearGradient(x,y,x+w,y+h);
+        g.addColorStop(0,'rgba(255,255,255,0.18)');
+        g.addColorStop(1,'rgba(0,0,0,0.10)');
+        ctx.fillStyle=g; ctx.fillRect(x,y,w,h);
+        ctx.strokeStyle=STROKES[idx]; ctx.lineWidth=1;
+        ctx.strokeRect(x+.5,y+.5,w-1,h-1);
+        if (w>18&&h>14) {
+          ctx.fillStyle='rgba(0,0,0,0.55)';
+          ctx.font=`bold ${Math.min(11,Math.floor(Math.min(w,h)*0.38))}px monospace`;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(c*rows+r+1, x+w/2, y+h/2);
         }
       }
     }
   }
 
   function drawContainerFrame(ctx, ox, oy, cW, cH, scale) {
-    ctx.shadowColor = 'rgba(0,122,255,0.30)';
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = '#007AFF';
-    ctx.lineWidth = 2.5;
-    ctx.strokeRect(ox, oy, cW * scale, cH * scale);
-    ctx.shadowBlur = 0;
-
-    const m = 8;
-    ctx.strokeStyle = '#1c1c1e';
-    ctx.lineWidth = 1.5;
-    [[ox,oy],[ox+cW*scale,oy],[ox,oy+cH*scale],[ox+cW*scale,oy+cH*scale]].forEach(([cx,cy],i) => {
-      const dx = i%2===0?1:-1, dy = i<2?1:-1;
+    ctx.shadowColor='rgba(0,122,255,0.32)'; ctx.shadowBlur=10;
+    ctx.strokeStyle='#007AFF'; ctx.lineWidth=2.5;
+    ctx.strokeRect(ox,oy,cW*scale,cH*scale);
+    ctx.shadowBlur=0;
+    const m=8;
+    ctx.strokeStyle=TC.corner; ctx.lineWidth=1.5;
+    [[ox,oy],[ox+cW*scale,oy],[ox,oy+cH*scale],[ox+cW*scale,oy+cH*scale]].forEach(([cx,cy],i)=>{
+      const dx=i%2===0?1:-1, dy=i<2?1:-1;
       ctx.beginPath(); ctx.moveTo(cx,cy+dy*m); ctx.lineTo(cx,cy); ctx.lineTo(cx+dx*m,cy); ctx.stroke();
     });
   }
 
   function drawAxisLabels(ctx, ox, oy, cW, cH, scale, xLabel, yLabel, xUnit, yUnit) {
-    ctx.fillStyle = '#636366';
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'center';
-
-    ctx.fillText(`← ${xLabel}: ${xUnit} cm →`, ox + cW * scale / 2, oy + cH * scale + 20);
-
+    ctx.fillStyle=TC.axis; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText(`← ${xLabel}: ${xUnit} cm →`, ox+cW*scale/2, oy+cH*scale+20);
     ctx.save();
-    ctx.translate(14, oy + cH * scale / 2);
-    ctx.rotate(-Math.PI / 2);
+    ctx.translate(14, oy+cH*scale/2); ctx.rotate(-Math.PI/2);
     ctx.fillText(`← ${yLabel}: ${yUnit} cm →`, 0, 0);
     ctx.restore();
   }
 
   function drawTitle(ctx, canvasW, text) {
-    ctx.fillStyle = '#1c1c1e';
-    ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText(text, canvasW / 2, 8);
+    ctx.fillStyle=TC.title;
+    ctx.font='bold 12px "Noto Sans TC",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(text, canvasW/2, 8);
   }
 
   function drawResidual(ctx, ox, oy, scale, cW, cH, usedW, usedH) {
-    const rx = ox + usedW * scale;
-    const ry = oy + usedH * scale;
-    const remW = (cW - usedW) * scale;
-    const remH = (cH - usedH) * scale;
-    if (remW > 2) {
-      ctx.fillStyle = 'rgba(255,59,48,0.10)';
-      ctx.fillRect(rx, oy, remW, cH * scale);
-      ctx.strokeStyle = 'rgba(255,59,48,0.40)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 3]);
-      ctx.strokeRect(rx, oy, remW, cH * scale);
-      ctx.setLineDash([]);
-      if (remW > 22) {
-        ctx.fillStyle = '#FF3B30';
-        ctx.font = '9px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`+${cW - usedW}`, rx + remW / 2, oy + cH * scale / 2);
+    const rx=ox+usedW*scale, ry=oy+usedH*scale;
+    const remW=(cW-usedW)*scale, remH=(cH-usedH)*scale;
+    if (remW>2) {
+      ctx.fillStyle='rgba(255,59,48,0.10)'; ctx.fillRect(rx,oy,remW,cH*scale);
+      ctx.strokeStyle='rgba(255,59,48,0.40)'; ctx.lineWidth=1;
+      ctx.setLineDash([4,3]); ctx.strokeRect(rx,oy,remW,cH*scale); ctx.setLineDash([]);
+      if (remW>22) {
+        ctx.fillStyle='#FF3B30'; ctx.font='9px monospace';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(`+${cW-usedW}`, rx+remW/2, oy+cH*scale/2);
       }
     }
-    if (remH > 2) {
-      ctx.fillStyle = 'rgba(255,59,48,0.08)';
-      ctx.fillRect(ox, ry, usedW * scale, remH);
-      ctx.strokeStyle = 'rgba(255,59,48,0.35)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 3]);
-      ctx.strokeRect(ox, ry, usedW * scale, remH);
-      ctx.setLineDash([]);
-      if (remH > 16) {
-        ctx.fillStyle = '#FF3B30';
-        ctx.font = '9px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`+${cH - usedH}`, ox + usedW * scale / 2, ry + remH / 2);
+    if (remH>2) {
+      ctx.fillStyle='rgba(255,59,48,0.08)'; ctx.fillRect(ox,ry,usedW*scale,remH);
+      ctx.strokeStyle='rgba(255,59,48,0.35)'; ctx.lineWidth=1;
+      ctx.setLineDash([4,3]); ctx.strokeRect(ox,ry,usedW*scale,remH); ctx.setLineDash([]);
+      if (remH>16) {
+        ctx.fillStyle='#FF3B30'; ctx.font='9px monospace';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(`+${cH-usedH}`, ox+usedW*scale/2, ry+remH/2);
       }
     }
   }
 
-  // ── TOP VIEW ──
-  {
-    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('top-canvas', cLen, cWid);
-    drawTitle(ctx, ctx.canvas.width, `頂視圖（俯視）  ${lc} × ${wc} = ${lc*wc} 箱/層`);
-    drawBoxGrid(ctx, ox, oy, scale, lc, wc, bLen, bWid, 0);
-    drawResidual(ctx, ox, oy, scale, cLen, cWid, lc * bLen, wc * bWid);
-    drawContainerFrame(ctx, ox, oy, cLen, cWid, scale);
-    drawAxisLabels(ctx, ox, oy, cLen, cWid, scale, '長', '寬', cLen, cWid);
-  }
+  // TOP VIEW
+  { const {ctx,scale,ox,oy,cW,cH} = setupCanvas('top-canvas',cLen,cWid);
+    drawTitle(ctx,ctx.canvas.width,`頂視圖（俯視）  ${lc} × ${wc} = ${lc*wc} 箱/層`);
+    drawBoxGrid(ctx,ox,oy,scale,lc,wc,bLen,bWid);
+    drawResidual(ctx,ox,oy,scale,cLen,cWid,lc*bLen,wc*bWid);
+    drawContainerFrame(ctx,ox,oy,cLen,cWid,scale);
+    drawAxisLabels(ctx,ox,oy,cLen,cWid,scale,'長','寬',cLen,cWid); }
 
-  // ── FRONT VIEW ──
-  {
-    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('front-canvas', cWid, cHgt);
-    drawTitle(ctx, ctx.canvas.width, `前視圖  ${wc} × ${hc} 層 = ${wc*hc} 格`);
-    drawBoxGrid(ctx, ox, oy, scale, wc, hc, bWid, bHgt, 1);
-    drawResidual(ctx, ox, oy, scale, cWid, cHgt, wc * bWid, hc * bHgt);
-    drawContainerFrame(ctx, ox, oy, cWid, cHgt, scale);
-    drawAxisLabels(ctx, ox, oy, cWid, cHgt, scale, '寬', '高', cWid, cHgt);
-  }
+  // FRONT VIEW
+  { const {ctx,scale,ox,oy,cW,cH} = setupCanvas('front-canvas',cWid,cHgt);
+    drawTitle(ctx,ctx.canvas.width,`前視圖  ${wc} × ${hc} 層 = ${wc*hc} 格`);
+    drawBoxGrid(ctx,ox,oy,scale,wc,hc,bWid,bHgt);
+    drawResidual(ctx,ox,oy,scale,cWid,cHgt,wc*bWid,hc*bHgt);
+    drawContainerFrame(ctx,ox,oy,cWid,cHgt,scale);
+    drawAxisLabels(ctx,ox,oy,cWid,cHgt,scale,'寬','高',cWid,cHgt); }
 
-  // ── SIDE VIEW ──
-  {
-    const { ctx, scale, ox, oy, cW, cH } = setupCanvas('side-canvas', cLen, cHgt);
-    drawTitle(ctx, ctx.canvas.width, `側視圖  ${lc} × ${hc} 層`);
-    drawBoxGrid(ctx, ox, oy, scale, lc, hc, bLen, bHgt, 2);
-    drawResidual(ctx, ox, oy, scale, cLen, cHgt, lc * bLen, hc * bHgt);
-    drawContainerFrame(ctx, ox, oy, cLen, cHgt, scale);
-    drawAxisLabels(ctx, ox, oy, cLen, cHgt, scale, '長', '高', cLen, cHgt);
-  }
+  // SIDE VIEW
+  { const {ctx,scale,ox,oy,cW,cH} = setupCanvas('side-canvas',cLen,cHgt);
+    drawTitle(ctx,ctx.canvas.width,`側視圖  ${lc} × ${hc} 層`);
+    drawBoxGrid(ctx,ox,oy,scale,lc,hc,bLen,bHgt);
+    drawResidual(ctx,ox,oy,scale,cLen,cHgt,lc*bLen,hc*bHgt);
+    drawContainerFrame(ctx,ox,oy,cLen,cHgt,scale);
+    drawAxisLabels(ctx,ox,oy,cLen,cHgt,scale,'長','高',cLen,cHgt); }
 }
 
-// Init
-window.addEventListener('DOMContentLoaded', () => {
-  calculate(false);
-});
+window.addEventListener('DOMContentLoaded', () => { calculate(false); });
 </script>
 </body>
 </html>
