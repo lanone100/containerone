@@ -7,19 +7,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2330;
-    --border: #30363d;
-    --accent: #00d9a3;
-    --accent2: #0096ff;
-    --warn: #f85149;
-    --warn-bg: rgba(248,81,73,0.12);
-    --ok: #3fb950;
-    --ok-bg: rgba(63,185,80,0.12);
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --text3: #6e7681;
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #f5f7fa;
+    --border: #d0d7de;
+    --accent: #0a9d76;
+    --accent2: #0068d6;
+    --warn: #cf1322;
+    --warn-bg: rgba(207,19,34,0.08);
+    --ok: #1a7f37;
+    --ok-bg: rgba(26,127,55,0.08);
+    --text: #1a1f29;
+    --text2: #4a5568;
+    --text3: #718096;
     --mono: 'JetBrains Mono', monospace;
     --sans: 'Noto Sans TC', sans-serif;
     --r: 10px;
@@ -35,7 +35,7 @@
 
   /* Header */
   .header {
-    background: linear-gradient(135deg, #0d2137 0%, #0d1117 60%);
+    background: linear-gradient(135deg, #e8f4ff 0%, #f0f9f5 60%);
     border-bottom: 1px solid var(--border);
     padding: 20px 16px 16px;
     text-align: center;
@@ -46,7 +46,7 @@
   .header h1 {
     font-size: 17px;
     font-weight: 700;
-    color: var(--accent);
+    color: #0a7a5c;
     letter-spacing: 0.05em;
   }
   .header p {
@@ -114,7 +114,7 @@
     font-family: var(--mono);
   }
   .type-tab.active {
-    background: rgba(0,217,163,0.12);
+    background: rgba(10,157,118,0.10);
     border-color: var(--accent);
     color: var(--accent);
   }
@@ -125,7 +125,7 @@
     margin-top: 2px;
     font-family: var(--sans);
   }
-  .type-tab.active .sub { color: rgba(0,217,163,0.7); }
+  .type-tab.active .sub { color: rgba(10,157,118,0.75); }
 
   /* Form grid */
   .form-grid {
@@ -216,7 +216,7 @@
   .calc-btn {
     width: 100%;
     background: var(--accent);
-    color: #0d1117;
+    color: #ffffff;
     border: none;
     border-radius: 9px;
     padding: 14px;
@@ -240,8 +240,8 @@
 
   /* Best result card */
   .best-card {
-    background: linear-gradient(135deg, rgba(0,217,163,0.08) 0%, rgba(0,150,255,0.05) 100%);
-    border: 1px solid rgba(0,217,163,0.3);
+    background: linear-gradient(135deg, rgba(10,157,118,0.07) 0%, rgba(0,104,214,0.04) 100%);
+    border: 1px solid rgba(10,157,118,0.3);
     border-radius: var(--r);
     padding: 16px;
     margin-bottom: 14px;
@@ -333,17 +333,17 @@
   td {
     padding: 9px 8px;
     text-align: center;
-    border-bottom: 1px solid rgba(48,54,61,0.5);
+    border-bottom: 1px solid rgba(208,215,222,0.7);
     font-family: var(--mono);
     color: var(--text);
     white-space: nowrap;
   }
-  tr.best-row-tr td { background: rgba(0,217,163,0.06); }
+  tr.best-row-tr td { background: rgba(10,157,118,0.06); }
   tr.best-row-tr td:first-child { position: relative; }
   .best-badge {
     display: inline-block;
     background: var(--accent);
-    color: #0d1117;
+    color: #ffffff;
     font-size: 9px;
     font-weight: 700;
     padding: 1px 5px;
@@ -376,14 +376,14 @@
   .vtab.active {
     border-color: var(--accent2);
     color: var(--accent2);
-    background: rgba(0,150,255,0.08);
+    background: rgba(0,104,214,0.07);
   }
   .view-panel { display: none; }
   .view-panel.active { display: block; }
   .canvas-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    background: #0d1117;
+    background: #f8fafb;
     border-radius: 8px;
     padding: 8px 8px 4px;
     border: 1px solid var(--border);
@@ -409,6 +409,30 @@
     .form-grid { grid-template-columns: 1fr; }
     .form-grid.cols3 { grid-template-columns: 1fr 1fr; }
     .type-tabs { grid-template-columns: repeat(2,1fr); }
+  }
+
+  /* Mobile font & touch enhancements */
+  @media (max-width: 480px) {
+    .field input, .field select {
+      font-size: 16px; /* prevent iOS zoom on focus */
+      padding: 11px 10px;
+    }
+    .field label { font-size: 12px; }
+    .best-count { font-size: 44px; }
+    .type-tab { font-size: 13px; padding: 10px 4px; }
+    .card-head { font-size: 13px; }
+    .calc-btn { font-size: 16px; padding: 15px; }
+    table { font-size: 12px; }
+    th { font-size: 11px; padding: 8px 6px; }
+    td { padding: 8px 6px; }
+  }
+
+  /* Tablet+ comfortable padding */
+  @media (min-width: 600px) {
+    .main { padding: 20px 16px; }
+    .card-body { padding: 18px; }
+    .best-count { font-size: 60px; }
+    .field input, .field select { font-size: 15px; }
   }
 </style>
 </head>
@@ -818,16 +842,16 @@ function drawAll(result, cLen, cWid, cHgt) {
 
   function drawContainerFrame(ctx, ox, oy, cW, cH, scale) {
     // Shadow
-    ctx.shadowColor = 'rgba(0,217,163,0.25)';
+    ctx.shadowColor = 'rgba(10,157,118,0.30)';
     ctx.shadowBlur = 8;
-    ctx.strokeStyle = '#00d9a3';
+    ctx.strokeStyle = '#0a9d76';
     ctx.lineWidth = 2.5;
     ctx.strokeRect(ox, oy, cW * scale, cH * scale);
     ctx.shadowBlur = 0;
 
     // Corner marks
     const m = 8;
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = '#1a1f29';
     ctx.lineWidth = 1.5;
     [[ox,oy],[ox+cW*scale,oy],[ox,oy+cH*scale],[ox+cW*scale,oy+cH*scale]].forEach(([cx,cy],i) => {
       const dx = i%2===0?1:-1, dy = i<2?1:-1;
@@ -836,7 +860,7 @@ function drawAll(result, cLen, cWid, cHgt) {
   }
 
   function drawAxisLabels(ctx, ox, oy, cW, cH, scale, xLabel, yLabel, xUnit, yUnit) {
-    ctx.fillStyle = '#8b949e';
+    ctx.fillStyle = '#718096';
     ctx.font = '10px monospace';
     ctx.textAlign = 'center';
 
@@ -852,7 +876,7 @@ function drawAll(result, cLen, cWid, cHgt) {
   }
 
   function drawTitle(ctx, canvasW, text) {
-    ctx.fillStyle = '#e6edf3';
+    ctx.fillStyle = '#1a1f29';
     ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
